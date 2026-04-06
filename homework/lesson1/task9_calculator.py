@@ -12,5 +12,7 @@ elif znak == '*':
      result = liczba1 * liczba2
 elif znak == '/':
      result = liczba1 / liczba2
+else:
+    result = "niepoprawny znak"
      
 print(f"wynik działania wynosi: {result}")
