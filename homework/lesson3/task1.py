@@ -8,7 +8,7 @@ licznik = 0
 for ocena in srednia_ocen:
     suma_ocen += ocena
     licznik = 1 # || licznik = licznik + 1
-print(srednia_ocen/licznik)
+print(srednia_ocen / licznik)
 
 #opcja2
 #srednia_ocen = sum(oceny)/len(oceny)
@@ -18,4 +18,4 @@ print(srednia_ocen/licznik)
 #    return f"{zmienna=}[{zmienna._class_}]"
 
 #for zmienna in (imie, wiek, srednia_ocen, czy_student):
-#    print(opisz_zmienna(zmienna))
+#      print(opisz_zmienna(zmienna))
