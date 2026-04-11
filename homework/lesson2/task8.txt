@@ -1,0 +1,9 @@
+# cd Desktop
+
+# mkdir moj pierwszy projekt
+
+# cd moj_pierwszy_projekt
+
+# touch main.py
+
+# ls

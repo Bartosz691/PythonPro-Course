@@ -1,0 +1,17 @@
+# mkdir project_test
+
+# cd project_test
+
+#python -m venv venv
+
+#aktywacja (Windows)
+
+#venv\Scripts\active
+
+#aktywacja (Linux/Mac)
+
+#source venv/bin/activate
+
+#pip list
+
+#deactivate
