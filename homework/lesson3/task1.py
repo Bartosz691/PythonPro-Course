@@ -1,14 +1,32 @@
 imie = "Bartosz"
 wiek = 25
-srednia_ocen = [3,2,3,4,5]
+oceny = [3,6,3,4,5]
 czy_student = True
+srednia_ocen = sum(oceny) / len(oceny)
 
-suma_ocen = 0
-licznik = 0
-for ocena in srednia_ocen:
-    suma_ocen += ocena
-    licznik = 1 # || licznik = licznik + 1
-print(srednia_ocen / licznik)
+student = {
+    "imie:": imie,
+    "wiek:": wiek,
+    "sr_ocen":srednia_ocen,
+}
+
+for zmienna, wartosc in student.items():
+    print(f"zmienna: {zmienna} | wartość: {wartosc} | Typ: {type(wartosc)}")
+
+
+
+
+#imie = "Bartosz"
+#wiek = 25
+#srednia_ocen = [3,2,3,4,5]
+#czy_student = True
+
+#suma_ocen = 0
+#licznik = 0
+#for ocena in srednia_ocen:
+#    suma_ocen += ocena
+#    licznik = 1 # || licznik = licznik + 1
+#print(srednia_ocen / licznik)
 
 #opcja2
 #srednia_ocen = sum(oceny)/len(oceny)
