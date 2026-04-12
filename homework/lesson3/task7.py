@@ -6,3 +6,4 @@ print(punkt)
 
 #Wystąpił błąd TypeError: 'tuple' object does not support item assigment 
 # ponieważ tuple są niemutowalne co oznacza, że nie można w bezpośrednio zmienić jej poszczególnych elementów
+#tuple jest używana do stałych danych
