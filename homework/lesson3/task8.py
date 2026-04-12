@@ -9,3 +9,4 @@ print(liczba_str1)
 print(liczba_str2)
 
 #podczas konwersji float na int usuwana jest wartość po przecinku dla danej liczby
+
