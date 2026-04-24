@@ -16,3 +16,5 @@ def loguj(fun):
 def funkcja():
     print("działanie funkcji...")
 
+res  = funkcja()
+print(res)
