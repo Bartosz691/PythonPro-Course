@@ -11,7 +11,7 @@ while True:
          func_dict[dzialanie](fnum, sum)
     except ValueError as e:
         err = e
-        print("Podano niepoprawną liczbę")
+        print("Podano niepoprawną liczbę: ", e.args[0].split(' ')[-1])
     except KeyError:
         print("niepoprawne działanie ")
     except ZeroDivisionError:
