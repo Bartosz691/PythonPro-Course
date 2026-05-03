@@ -15,13 +15,13 @@ class BladWalidacjiError(Exception):
         if any(znak.isalnum() for znak in haslo):
             err_lst.append('brak znaku specjalnego')
         if err_lst:
-            raise BladWalidacjiError(*err_lst)    
+         raise BladWalidacjiError(*err_lst)    
             
 
-try:
-    walidacja_hasla("xd")
-except BladWalidacjiError as e:
-       # x = 1
-       bledy = e
+    try:
+      walidacja_hasla("xd")
+    except BladWalidacjiError as e:
+        # x = 1
+        bledy = e
         
     
