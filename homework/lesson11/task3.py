@@ -7,10 +7,11 @@ class Pracownik:
         
 class Programista(Pracownik):
     def __init__(self, imie, stawka_godzinowa, jezyki_programowania):
-        super().__init__(imie, stawka_godzinowa, jezyki_programowania)
+        super().__init__(imie, stawka_godzinowa)
+        self.jezyki_programowania = jezyki_programowania
         
-    def oblicz_pensje(stawka_godzinowa, liczba_godzin):
-        wynik_pensja = stawka_godzinowa * liczba_godzin
+    def oblicz_pensje(self, liczba_godzin):
+           return self.stawka_godzinowa * liczba_godzin
        
         
 programista = Programista()

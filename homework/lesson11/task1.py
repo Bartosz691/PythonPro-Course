@@ -7,8 +7,10 @@ class Film:
     def informacje(self: str):
         return f'"Tytuł: {self.tytul}" rok produkcji: {self.rok_produkcji} reżyseria: {self.rezyser}"'
 
+
+
 film1 = Film("Krytyczna Decyzja", "Stuart Baird", "1996") 
 film2 = Film("Avatar: Istota wody", "James Cameron", "2022")
 
-print(film1)
-print(film2)
+print(film1.informacje())
+print(film2.informacje())
