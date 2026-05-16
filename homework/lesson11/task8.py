@@ -10,10 +10,13 @@ class Strunowy(Instrument):
     
 class Dety(Instrument):
     
+    def graj(self):
+        return "wydaje dźwięk poprzez przepływ powietrza"
+    
 class Gitara(Strunowy):
     
     def graj(self):
-        return "Giatara w"+super().graj()[1:-1] + " palcem. "
+        return "Gitara w"+super().graj()[1:-1] + " palcem. "
     
 class Skrzypce (Strunowy):
     
@@ -24,3 +27,8 @@ i = Instrument()
 s = Strunowy()
 g = Gitara()
 s_ = Skrzypce()
+
+
+print(s.graj())
+print(g.graj())
+print(s_.graj())

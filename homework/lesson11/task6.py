@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 class Wektor2D:
     
     def __init__(self, x, y):
@@ -28,3 +30,4 @@ class Wektor2Ddc:
         return __class__(self.x - other.x, self.y - other.y)
 
 w = Wektor2D(1, 2) + Wektor2D(3,4)
+print(w)
