@@ -19,7 +19,7 @@ while True:
             break
         a = float(tekst)
         b = float(input("Podaj drugą liczbę: "))
-        znak = input("Podaj działanie (+, -, *, /): ")
+        znak = input("Podaj znak (+, -, *, /): ")
         
         wynik = dzialanie(a, b, znak)
     
