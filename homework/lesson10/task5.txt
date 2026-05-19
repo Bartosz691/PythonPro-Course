@@ -1,0 +1,11 @@
+cd team-project-basic # przejście do repozytorium projektu
+
+echo "def hello_world(): print('Hello World')" > app.py # utworzenie pliku app.py z prostą funkcją
+
+git status #sprawdzenie statusu repozytorium
+
+git add app.py # dodanie zmodyfikowanego pliku do stadging area
+
+git commit -m "fix: update hello world message" # drugi commmit po poprawce
+
+git log # wyświetlenie historii commitów

@@ -1,0 +1,15 @@
+
+git clone https://github.com/login/nazwa_repozytorium.git # sklonowanie repozytorium
+
+cd nazwa_repozytorium # przejście do folderu repozytorium
+
+git checkout -b contributors update #utworzenie nowej gałęzi i połączenie na nią
+
+echo "Bartosz Wypych" >> contributors.txt # dodanie imienia i nazwiska do pliku
+
+git add contributors.txt 
+
+git commit -m "add new contributors" # zapisanie zmian
+
+git push origin contributors-update # wysłanie gałęzi do zdalnego repozytorium
+

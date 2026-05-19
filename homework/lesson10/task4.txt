@@ -1,0 +1,11 @@
+mkdir team-project-basic # utworzenie nowego folderu projekty
+
+cd team-project-basic # przejście do folderu projekty
+
+git init #inicjalizacja nowego repozytorium git
+
+git config user.name "Bartosz" # ustawienie nazwy użytkownika dla tego repozytorium
+
+git config user.email "bartosz@example.com" #ustawienie adresu email dla tego repozytorium
+
+git config --list #wyświetlenie aktualnej konfiguracji git

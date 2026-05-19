@@ -1,0 +1,12 @@
+git checkout -b feature-login #utworzenie nowej gałęzi i przełączenie na nią
+
+echo "print('Logowanie użytkownika')" > login.py #utworzenie pliku login.py
+
+git add login.py #dodanie do stadging area
+
+git commit -m "dodanie modułu logowania" #zapisanie zmian gałęzi  w feature login
+
+git checkout main #powrót gałęzi feature-login z main
+
+git log #wyświetlenie historii commitów
+
