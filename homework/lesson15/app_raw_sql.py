@@ -46,4 +46,4 @@ def pokaz_zadania():
   print("Nieznana opcja, spróbuj ponownie.")
 
 if __name__ == "__main__":
-   main()
+     main()
