@@ -19,6 +19,6 @@ class Programista(Pracownik):
    
         
 programista = Programista("Janusz",100,["C","C++","Python"])
-print(programista.oblicz_pensje(50))
+print(programista.oblicz_pensje(50)) #wyświetlenie wyniku
 
    
