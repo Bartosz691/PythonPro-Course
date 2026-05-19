@@ -1,5 +1,7 @@
 git config --global user.name "Bartosz"
 
+git config --global user.email "bartosz@example.pl"
+
 cd /D:/kurs # przejście do folderu gdzie ma być utowrozne repozytorium
 
 git init  #inicjalizacja nowego repozytorium w bierzącym folderze
@@ -9,3 +11,5 @@ echo "Projekt Bartosza" > README .md
 git add README.md
 
 git commit -m "dodanie pliku README"
+
+git log
