@@ -1,16 +1,8 @@
+
 import sqlite3
 
-def zwroc_ksiazki():
-    with sqlite3.connect('biblioteka.db') as conn:
-        c = conn.cursor()
-        c.execute("select * from ksiazki")
-        return c.fetchall()
-
-def zwroc_ksiazki_autora(autor: str):
-    with sqlite3.connect('biblioteka.db') as conn:
-        c = conn.cursor()
-        c.execute("select * from ksiazki where autor = ?", (autor,))
-        return c.fetchall()
+conn = sqlite3.connect('biblioteka.db')
+c = conn.cursor()
 
 def zaktualizuj_rok(autor, tytul, nowy_rok):
     with sqlite3.connect('biblioteka.db') as conn:
@@ -27,3 +19,6 @@ def zaktualizuj_rok(autor, tytul, nowy_rok):
 if __name__ == "__main__":
     # print(zwroc_ksiazki(), zwroc_ksiazki_autora('autor2'))
     zaktualizuj_rok("autor1", "ksiazka1", 2026)
+    
+
+conn.close()
