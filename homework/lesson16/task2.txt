@@ -1,0 +1,4 @@
+Serwer jest komputerem  - oprogramowaniem, które udostępnia daną usługę na przykład serwis strony internetowej jest cały czas w gotowości i reaguje
+na żądanie klienta.
+
+Klient jest to komputer wysyłający zapytanie do serwera w celu skorystania z danej usuługi np. wyświetlenie strony internetowej

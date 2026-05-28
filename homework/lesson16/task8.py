@@ -42,7 +42,7 @@ class FakeServer:
            try: 
              return self._db_user_by_id(int(p.rsplit('/',1)))
            except   ValueError:
-              return HttpResp(200, user)
+                return HttpResp(200, user)
            except StopIteration:
                ...
     def _db_user_by_id(self, id: int):
