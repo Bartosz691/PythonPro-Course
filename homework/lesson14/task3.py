@@ -12,6 +12,6 @@ c.execute(query)
 
 
 wynik = c.fetchone()
-print(f"Łączns wartość wszystkich produktów z kategorii Elektronika: {wynik}")
+print(f"Łączna wartość wszystkich produktów z kategorii Elektronika: {wynik}")
 
 conn.close()
