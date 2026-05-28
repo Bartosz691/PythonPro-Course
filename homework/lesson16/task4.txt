@@ -1,0 +1,1 @@
+Kiedy otwieram stronę www.google.com, przeglądarka najprawdopodobniej wysyła metodę GET

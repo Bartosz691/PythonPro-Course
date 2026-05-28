@@ -1,0 +1,2 @@
+protokół odpowiedzialny za znalezienie drogi do komputera docelowego
+należy do warstwy 3 modelu TCP/IP
