@@ -1,0 +1,6 @@
+python manage.py migrate
+
+python manage.py createsuperuser
+
+Username (leave blank to use 'theha'): Bartson
+Email address: thehak@wp.pl

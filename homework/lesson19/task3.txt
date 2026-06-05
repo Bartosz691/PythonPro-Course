@@ -1,0 +1,13 @@
+# python manage.py startapp strona                  
+# Dodanie w settings.py aplikacji strona:
+# Application definition
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'strona', # nowa aplikacja
+]
