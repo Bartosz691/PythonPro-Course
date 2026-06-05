@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Post(models.Model):
+class Ogłoszenie(models.Model):
   tytul = models.CharField(max_length=100)
   opis = models.TextField()
   cena = models.DecimalField(max_digits=8, decimal_places=2)
@@ -11,7 +11,7 @@ class Post(models.Model):
        return self.title
    
 # Krok 3: Rejestracja modelu w pliku blog/admin.py
-# Dzięki temu model 'Post' pojawi się w panelu administratora.
+# Dzięki temu model 'Ogłoszenie' pojawi się w panelu administratora.
 from django.contrib import admin
-from .models import Post # Importujemy nasz model
-admin.site.register(Post) # Rejestrujemy model
+from .models import Ogłoszenie # Importujemy nasz model
+admin.site.register(Ogłoszenie) # Rejestrujemy model

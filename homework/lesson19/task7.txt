@@ -5,11 +5,18 @@ Migrations for 'strona':
     + Create model Post
 
 PS D:\PythonPro-Course\homework\lesson19\mojastrona> python manage.py makemigrations
+Was the model strona.Post renamed to Ogłoszenie? [y/N] y
 Migrations for 'strona':
-  strona\migrations\0001_initial.py
-    + Create model Post
+  strona\migrations\0002_rename_post_ogłoszenie.py
+    ~ Rename model Post to Ogłoszenie
+
+PS D:\PythonPro-Course\homework\lesson19\mojastrona> python manage.py makemigrations
+Was the model strona.Post renamed to Ogłoszenie? [y/N] y
+Migrations for 'strona':
+  strona\migrations\0002_rename_post_ogłoszenie.py
+    ~ Rename model Post to Ogłoszenie
 PS D:\PythonPro-Course\homework\lesson19\mojastrona> python manage.py migrate
 Operations to perform:
   Apply all migrations: admin, auth, contenttypes, sessions, strona
 Running migrations:
-  Applying strona.0001_initial... OK
+  Applying strona.0002_rename_post_ogłoszenie... OK
