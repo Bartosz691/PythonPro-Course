@@ -1,3 +1,4 @@
+co powinno być wpisane w models.py:
 from django.db import models
 
 # Create your models here.
@@ -10,3 +11,11 @@ class Ogłoszenie(models.Model):
   def __str__(self):
        return self.tytul
    
+zmiany w admin.py:
+
+from django.contrib import admin
+from .models import Ogłoszenie
+
+@admin.register(Ogłoszenie)
+class OgloszenieAdmin(admin.ModelAdmin):
+    list_display = ('tytul', 'cena', 'data_dodania')

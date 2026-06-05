@@ -1,7 +1,6 @@
 from django.contrib import admin
-
-# Register your models here.
-from django.contrib import admin
 from .models import Ogłoszenie
 
-#admin.site.register(Ogłoszenie)
+@admin.register(Ogłoszenie)
+class OgloszenieAdmin(admin.ModelAdmin):
+    list_display = ('tytul', 'cena', 'data_dodania')
