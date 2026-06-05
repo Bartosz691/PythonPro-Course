@@ -1,0 +1,15 @@
+
+PS D:\PythonPro-Course\homework\lesson19\mojastrona> python manage.py makemigrations
+Migrations for 'strona':
+  strona\migrations\0001_initial.py
+    + Create model Post
+
+PS D:\PythonPro-Course\homework\lesson19\mojastrona> python manage.py makemigrations
+Migrations for 'strona':
+  strona\migrations\0001_initial.py
+    + Create model Post
+PS D:\PythonPro-Course\homework\lesson19\mojastrona> python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions, strona
+Running migrations:
+  Applying strona.0001_initial... OK
