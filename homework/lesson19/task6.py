@@ -8,7 +8,7 @@
 #  data_dodania = models.DateTimeField(auto_now_add=True)
   
 #  def __str__(self):
-#       return self.title
+#       return self.tytul
    
 # Krok 3: Rejestracja modelu w pliku blog/admin.py
 # Dzięki temu model 'Ogłoszenie' pojawi się w panelu administratora.
