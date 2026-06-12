@@ -2,12 +2,14 @@ import sqlite3
 
 def zadanie8():
     
-    qr = """--sql
-    SELECT k.nazwa_kategorii as kategoria, count(p.id_produktu)
-    from kategorie as k
-    join produkty as p
-    on p.id_kategorii = k.id_kategorii
-    GROUP BY p.id_kategorii 
+    qr = """
+    SELECT 
+        k.nazwa_kategorii AS kategoria, 
+        COUNT(p.id_produktu)
+    FROM kategorie AS k
+    JOIN produkty AS p
+          ON p.id_kategorii = k.id_kategorii
+    GROUP BY k.id_kategorii, k.nazwa_kategorii
     """
     
     
