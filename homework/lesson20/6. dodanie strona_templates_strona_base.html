@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Moja strona Django{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Moja strona Django</h1>
+
+        <nav>
+            <a href="{% url 'info' %}">Info</a> |
+            <a href="{% url 'rules' %}">Regulamin</a> |
+            <a href="{% url 'product-list' %}">Produkty</a> |
+            <a href="{% url 'product-add' %}">Dodaj produkt</a> |
+            <a href="{% url 'note-list' %}">Notatki</a>
+        </nav>
+
+        <hr>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

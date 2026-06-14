@@ -1,0 +1,8 @@
+http://127.0.0.1:8000/info/
+http://127.0.0.1:8000/rules/
+http://127.0.0.1:8000/user/Bartosz/
+http://127.0.0.1:8000/products/
+http://127.0.0.1:8000/products/add/
+http://127.0.0.1:8000/category/1/
+http://127.0.0.1:8000/notes/
+http://127.0.0.1:8000/note/1/

@@ -1,0 +1,19 @@
+PS D:\PythonPro-Course\homework\lesson20\mojastrona> python manage.py shell
+15 objects imported automatically (use -v 2 for details).
+
+Ctrl click to launch VS Code Native REPL
+Python 3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from strona.models import Product, Category, Note
+>>> 
+>>> elektronika = Category.objects.create(name="Elektronika")
+>>> ksiazki = Category.objects.create(name="Książki")
+>>> 
+>>> Product.objects.create(name="Laptop", description="Laptop do nauki", price=3500, category=elektronika)
+<Product: Laptop>
+>>> Product.objects.create(name="Książka Python", description="Książka do nauki Pythona", price=120, category=ksiazki)
+<Product: Książka Python>
+>>> 
+>>> for i in range(1, 8):
+...     Note.objects.create(title=f"Notatka {i}", content=f"Treść notatki numer {i}")

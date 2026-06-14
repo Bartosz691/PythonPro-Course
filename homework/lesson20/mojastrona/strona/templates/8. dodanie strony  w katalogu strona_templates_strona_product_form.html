@@ -1,0 +1,14 @@
+{% extends "strona/base.html" %}
+
+{% block title %}Dodaj produkt{% endblock %}
+
+{% block content %}
+<h2>Dodaj produkt</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Zapisz</button>
+</form>
+{% endblock %}
