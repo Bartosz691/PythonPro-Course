@@ -1,0 +1,16 @@
+(.venv) PS D:\PythonPro-Course\homework\lesson18\room_booking> python run.py
+Zarejestrowane trasy:
+Map([<Rule '/static/<filename>' (HEAD, OPTIONS, GET) -> static>,
+ <Rule '/api/rooms/' (HEAD, OPTIONS, GET) -> rooms.get_rooms>,
+ <Rule '/api/bookings/' (HEAD, OPTIONS, GET) -> bookings.get_bookings>,
+ <Rule '/dashboard' (HEAD, OPTIONS, GET) -> dashboard.dashboard>,
+ <Rule '/' (HEAD, OPTIONS, GET) -> index>,
+ <Rule '/test-db' (HEAD, OPTIONS, GET) -> test_db>])
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5050
+Press CTRL+C to quit
+127.0.0.1 - - [21/Jun/2026 00:39:50] "GET /test-db HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:39:50] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [21/Jun/2026 00:44:46] "GET /test-db HTTP/1.1" 200 -
