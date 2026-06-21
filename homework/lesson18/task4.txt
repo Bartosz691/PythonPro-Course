@@ -1,0 +1,26 @@
+wykonanie zadania 4:
+
+
+(.venv) PS D:\PythonPro-Course\homework\lesson18\room_booking> python run.py 
+Zarejestrowane trasy:
+Map([<Rule '/static/<filename>' (GET, HEAD, OPTIONS) -> static>,
+ <Rule '/api/rooms/' (GET, HEAD, OPTIONS) -> rooms.get_rooms>,
+ <Rule '/api/bookings/' (GET, HEAD, OPTIONS) -> bookings.get_bookings>,
+ <Rule '/dashboard' (GET, HEAD, OPTIONS) -> dashboard.dashboard>,
+ <Rule '/api/dashboard/stats' (GET, HEAD, OPTIONS) -> dashboard.api_stats>,
+ <Rule '/debug/n-plus-1' (GET, HEAD, OPTIONS) -> debug.debug_n_plus_1>,
+ <Rule '/api/notifications/' (GET, HEAD, OPTIONS) -> notifications.get_unread_notifications>,
+ <Rule '/api/notifications/<notification_id>/read' (POST, OPTIONS) -> notifications.mark_notification_as_read>,
+ <Rule '/' (GET, HEAD, OPTIONS) -> index>,
+ <Rule '/test-db' (GET, HEAD, OPTIONS) -> test_db>])
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5050
+Press CTRL+C to quit
+127.0.0.1 - - [21/Jun/2026 18:12:10] "GET /api/notifications/ HTTP/1.1" 200 -
+
+
+widok po wejściu na stronę http://127.0.0.1:5050/api/notifications/ powiadomień przed dodaniem powiadomień:
+
+[]

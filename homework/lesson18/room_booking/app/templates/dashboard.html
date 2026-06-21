@@ -2,8 +2,159 @@
 
 {% block content %}
 
-<h2>Dashboard</h2>
+<h2>Dashboard rezerwacji</h2>
 
-<p>Panel główny systemu.</p>
+<h3>Statystyki ogólne</h3>
+
+<ul>
+    <li>Aktywne sale: {{ stats.total_rooms }}</li>
+    <li>Użytkownicy: {{ stats.total_users }}</li>
+    <li>Wszystkie rezerwacje: {{ stats.total_bookings }}</li>
+    <li>Rezerwacje dziś: {{ stats.bookings_today }}</li>
+</ul>
+
+<hr>
+
+<h3>Najbliższe rezerwacje</h3>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Godzina</th>
+        <th>Sala</th>
+        <th>Tytuł</th>
+        <th>Osoba</th>
+    </tr>
+
+    {% for booking in upcoming %}
+        <tr>
+            <td>{{ booking.start_time.strftime("%H:%M") }}</td>
+            <td>{{ booking.room.name }}</td>
+            <td>{{ booking.title }}</td>
+            <td>{{ booking.user.name }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4">Brak najbliższych rezerwacji.</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<hr>
+
+<h3>Top użytkownicy</h3>
+
+<ul>
+    {% for user in top_users %}
+        <li>{{ user.name }} — {{ user.booking_count }} rezerwacji</li>
+    {% else %}
+        <li>Brak danych.</li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+<h3>Wykres kołowy — rezerwacje per departament</h3>
+
+<canvas id="departmentChart" width="400" height="200"></canvas>
+
+<hr>
+
+<h3>Heatmapa — dzień tygodnia × godzina</h3>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Dzień / Godzina</th>
+
+        {% for hour in hours %}
+            <th>{{ hour }}:00</th>
+        {% endfor %}
+    </tr>
+
+    {% for day in weekdays %}
+        <tr>
+            <th>{{ day }}</th>
+
+            {% for hour in hours %}
+                {% set value = heatmap_data[day][hour] %}
+
+                <td style="text-align: center;">
+                    {{ value }}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+<hr>
+
+<h3>Trend — liczba rezerwacji dziennie w ostatnich 30 dniach</h3>
+
+<canvas id="trendChart" width="600" height="250"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script id="department-labels" type="application/json">
+    {{ department_labels | tojson }}
+</script>
+
+<script id="department-values" type="application/json">
+    {{ department_values | tojson }}
+</script>
+
+<script id="trend-labels" type="application/json">
+    {{ trend_labels | tojson }}
+</script>
+
+<script id="trend-values" type="application/json">
+    {{ trend_values | tojson }}
+</script>
+
+<script>
+    const departmentLabels = JSON.parse(
+        document.getElementById("department-labels").textContent
+    );
+
+    const departmentValues = JSON.parse(
+        document.getElementById("department-values").textContent
+    );
+
+    const trendLabels = JSON.parse(
+        document.getElementById("trend-labels").textContent
+    );
+
+    const trendValues = JSON.parse(
+        document.getElementById("trend-values").textContent
+    );
+
+    const departmentCtx = document.getElementById("departmentChart");
+
+    new Chart(departmentCtx, {
+        type: "pie",
+        data: {
+            labels: departmentLabels,
+            datasets: [
+                {
+                    label: "Rezerwacje per departament",
+                    data: departmentValues
+                }
+            ]
+        }
+    });
+
+    const trendCtx = document.getElementById("trendChart");
+
+    new Chart(trendCtx, {
+        type: "line",
+        data: {
+            labels: trendLabels,
+            datasets: [
+                {
+                    label: "Liczba rezerwacji",
+                    data: trendValues
+                }
+            ]
+        }
+    });
+</script>
 
 {% endblock %}

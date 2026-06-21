@@ -1,0 +1,19 @@
+wykonanie zadania 2:
+
+Zadanie 2 – Analiza problemu N+1
+
+Utworzono endpoint /debug/n-plus-1 analizujący problem N+1 w SQLAlchemy.
+
+Porównano dwa podejścia:
+- pobieranie danych bez optymalizacji,
+- pobieranie danych z użyciem joinedload().
+
+Wynik:
+- bez optymalizacji: 10 zapytań SQL,
+- z joinedload(): 2 zapytania SQL,
+- oszczędność: 8 zapytań SQL.
+
+
+zawartość strony http://127.0.0.1:5050/debug/n-plus-1 :
+
+{"summary":{"saved_queries":8},"with_optimization":{"data":[{"room":"Sala A","title":"Spotkanie zespo\u0142u","user":"Jan Kowalski"},{"room":"Sala B","title":"Rozmowa rekrutacyjna","user":"Anna Nowak"},{"room":"Sala C","title":"Prezentacja projektu","user":"Piotr Kowalczuk"}],"description":"Wersja z joinedload","execution_time_seconds":0.030156373977661133,"query_count":2},"without_optimization":{"data":[{"room":"Sala A","title":"Spotkanie zespo\u0142u","user":"Jan Kowalski"},{"room":"Sala B","title":"Rozmowa rekrutacyjna","user":"Anna Nowak"},{"room":"Sala C","title":"Prezentacja projektu","user":"Piotr Kowalczuk"}],"description":"Wersja bez optymalizacji - problem N+1","execution_time_seconds":0.09954309463500977,"query_count":10}}

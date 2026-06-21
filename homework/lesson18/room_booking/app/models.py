@@ -1,4 +1,5 @@
 from datetime import datetime
+from sqlalchemy import event
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -151,3 +152,68 @@ class Booking(db.Model):
         db.DateTime,
         default=datetime.utcnow
     )
+
+    room = db.relationship(
+        "Room",
+        backref="bookings"
+    )
+
+    user = db.relationship(
+        "User",
+        backref="bookings"
+    )
+
+
+class Notification(db.Model):
+    __tablename__ = "notifications"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+
+    message = db.Column(
+        db.String(255),
+        nullable=False
+    )
+
+    is_read = db.Column(
+        db.Boolean,
+        default=False
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    user = db.relationship(
+        "User",
+        backref="notifications"
+    )
+
+
+@event.listens_for(Booking, "after_insert")
+def create_admin_notification(mapper, connection, target):
+    users_table = User.__table__
+    notifications_table = Notification.__table__
+
+    admins = connection.execute(
+        users_table.select().where(users_table.c.is_admin == True)
+    ).fetchall()
+
+    for admin in admins:
+        connection.execute(
+            notifications_table.insert().values(
+                user_id=admin.id,
+                message=f"Utworzono nową rezerwację: {target.title}",
+                is_read=False,
+                created_at=datetime.utcnow()
+            )
+        )
