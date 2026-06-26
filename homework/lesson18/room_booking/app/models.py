@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from sqlalchemy import event
 from flask_sqlalchemy import SQLAlchemy
 
@@ -100,6 +101,19 @@ class Room(db.Model):
         lazy="subquery"
     )
 
+    def is_available(self, start_time, end_time, exclude_booking_id=None):
+        query = Booking.query.filter(
+            Booking.room_id == self.id,
+            Booking.status != "cancelled",
+            Booking.start_time < end_time,
+            Booking.end_time > start_time
+        )
+
+        if exclude_booking_id is not None:
+            query = query.filter(Booking.id != exclude_booking_id)
+
+        return query.count() == 0
+
 
 class Booking(db.Model):
     __tablename__ = "bookings"
@@ -151,6 +165,16 @@ class Booking(db.Model):
     created_at = db.Column(
         db.DateTime,
         default=datetime.utcnow
+    )
+
+    recurrence_rule = db.Column(
+        db.String(30),
+        nullable=True
+    )
+
+    series_id = db.Column(
+        db.String(36),
+        nullable=True
     )
 
     room = db.relationship(

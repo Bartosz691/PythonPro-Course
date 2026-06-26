@@ -1,4 +1,6 @@
-from flask import Flask
+import traceback
+
+from flask import Flask, jsonify
 
 from config import config
 from app.models import db
@@ -34,5 +36,12 @@ def create_app(config_name="development"):
             return "Połączenie OK!"
         except Exception as e:
             return f"Błąd połączenia: {e}"
+
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        return jsonify({
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
 
     return app

@@ -1,0 +1,63 @@
+
+
+Zadanie 5 - cykliczne rezerwacje
+
+Dodanie mechanizmu obsługi cyklicznych rezerwacji w systemie Room Booking
+
+zaimplementowano:
+
+- pola recurrence_role i series_id
+- endpoint POST /api/bookings/recurring
+- generowanie wielu terminów rezerwecja miesięcznych lub weekendowych: WEEKLY lub MONTHLY
+- walidacja konfliktu terminów
+- zapis wszystkich rezerwacji z tym samym identyfikatorem series_id
+
+Rezultaty wykonania zadania:
+
+- status HTTP: 201
+- utworzenie pięciu rezerwacji
+-wygenerowanie series_id: 57cd0708-017e-4185-beda-8d2bbd415c94
+
+
+
+(.venv) PS D:\PythonPro-Course\homework\lesson18\room_booking> python test_recurring_booking.py
+Status: 201
+
+Treść odpowiedzi:
+{
+  "bookings": [
+    {
+      "end_time": "2026-06-25T11:00:00",
+      "id": 4,
+      "start_time": "2026-06-25T10:00:00",
+      "title": "Cykliczne spotkanie zespo\u0142u"
+    },
+    {
+      "end_time": "2026-07-02T11:00:00",
+      "id": 5,
+      "start_time": "2026-07-02T10:00:00",
+      "title": "Cykliczne spotkanie zespo\u0142u"
+    },
+    {
+      "end_time": "2026-07-09T11:00:00",
+      "id": 6,
+      "start_time": "2026-07-09T10:00:00",
+      "title": "Cykliczne spotkanie zespo\u0142u"
+    },
+    {
+      "end_time": "2026-07-16T11:00:00",
+      "id": 7,
+      "start_time": "2026-07-16T10:00:00",
+      "title": "Cykliczne spotkanie zespo\u0142u"
+    },
+    {
+      "end_time": "2026-07-23T11:00:00",
+      "id": 8,
+      "start_time": "2026-07-23T10:00:00",
+      "title": "Cykliczne spotkanie zespo\u0142u"
+    }
+  ],
+  "created_count": 5,
+  "message": "Utworzono seri\u0119 rezerwacji",
+  "series_id": "57cd0708-017e-4185-beda-8d2bbd415c94"
+}
