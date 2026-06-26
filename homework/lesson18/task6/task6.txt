@@ -1,0 +1,18 @@
+
+Zadanie 6 -> Dodanie eksportu raportu do PDF
+
+Raport zawiera możliwość generowania raportu PDF zawierającego listę rezerwacji sal.
+
+
+Dodano następujące funkcjonalności:
+
+- wykorzystanie biblioteki ReportLab,
+- endpoint GET /api/reports/bookings/pdf,
+- automatyczne pobieranie pliku raport_rezerwacji.pdf,
+- umieszczenie w raporcie:
+  • identyfikatora rezerwacji,
+  • tytułu spotkania,
+  • nazwy sali,
+  • użytkownika,
+  • daty i godziny rozpoczęcia.
+

@@ -18,12 +18,14 @@ def create_app(config_name="development"):
     from app.routes.dashboard import dashboard_bp
     from app.routes.debug import debug_bp
     from app.routes.notifications import notifications_bp
+    from app.routes.reports import reports_bp
 
     app.register_blueprint(rooms_bp)
     app.register_blueprint(bookings_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(debug_bp)
     app.register_blueprint(notifications_bp)
+    app.register_blueprint(reports_bp)
 
     @app.route("/")
     def index():
