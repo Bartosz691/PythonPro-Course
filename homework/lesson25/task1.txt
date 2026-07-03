@@ -1,0 +1,32 @@
+(.venv) PS D:\PythonPro-Course\homework\lesson25> pip install djangorestframework
+Requirement already satisfied: djangorestframework in d:\pythonpro-course\homework\lesson25\.venv\lib\site-packages (3.17.1)
+Requirement already satisfied: django>=4.2 in d:\pythonpro-course\homework\lesson25\.venv\lib\site-packages (from djangorestframework) (6.0.6)
+Requirement already satisfied: asgiref>=3.9.1 in d:\pythonpro-course\homework\lesson25\.venv\lib\site-packages (from django>=4.2->djangorestframework) (3.11.1)
+Requirement already satisfied: sqlparse>=0.5.0 in d:\pythonpro-course\homework\lesson25\.venv\lib\site-packages (from django>=4.2->djangorestframework) (0.5.5)
+Requirement already satisfied: tzdata in d:\pythonpro-course\homework\lesson25\.venv\lib\site-packages (from django>=4.2->djangorestframework) (2026.2)
+
+
+
+(.venv) PS D:\PythonPro-Course\homework\lesson25> django-admin startproject apka       
+(.venv) PS D:\PythonPro-Course\homework\lesson25> 
+
+
+(.venv) PS D:\PythonPro-Course\homework\lesson25> cd apka
+(.venv) PS D:\PythonPro-Course\homework\lesson25\apka> python manage.py startapp produkty
+(.venv) PS D:\PythonPro-Course\homework\lesson25\apka> 
+
+Dodanie definicji aplikacji:
+
+# Application definition
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+]
+
+
