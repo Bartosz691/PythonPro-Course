@@ -1,0 +1,49 @@
+wykonanie zadania 5
+
+dodanie odpowiednich funkcji, żeby utworzyć widok name przyjmujący parametr w pliku views.py w katalogu produkty:
+
+
+from django.http import HttpResponse
+from rest_framework import viewsets
+from .models import Produkt
+from .serializers import ProduktSerializer
+
+class ProduktViewSet(viewsets.ModelViewSet):
+    
+    queryset = Produkt.objects.all()
+    serializer_class = ProduktSerializer
+    
+def set_name_view(request):
+    name = request.GET.get("name")
+    
+    if not name:
+        return HttpResponse("Podaj imię w adresie, np. /api/set-name/?name=Jan")
+    
+    response = HttpResponse(f"Ustawiono ciasteczko dla użytkownika: {name}")
+    response.set_cookie("user_name", name)
+    
+    return response 
+
+def hello_view(request):
+    name = request.COOKIES.get("user_name", "Gość")
+    
+    return HttpResponse(f"Witaj, {name}!")    
+
+
+modyfikacja pliku apka/produkty/urls.py :
+
+from django.urls import path
+from rest_framework import routers
+
+from .views import ProduktViewSet, set_name_view, hello_view
+
+
+router = routers.DefaultRouter()
+router.register(r"produkty", ProduktViewSet)
+
+urlpatterns = [
+    path("set-name/", set_name_view),
+    path("hello/", hello_view),
+]
+
+urlpatterns += router.urls
