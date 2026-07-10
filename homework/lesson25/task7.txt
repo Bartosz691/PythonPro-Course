@@ -1,40 +1,47 @@
-from django.http import HttpResponse
+1. Dodanie importów w apka/produkty/views.py:
 
-from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Produkt, Note
-from .serializers import ProduktSerializer, NoteSerializer
+
+2. Modyfikacja views.py:
+@api_view(["GET"])
+def calculate_view(request):
+    return Response({
+        "message": "Endpoint kalkulatora działa"
+    })
+
+3. W produkty/urls.py dodanie importu widoków:
+
+from .views import (
+    ProduktViewSet,
+    NoteViewSet,
+    set_name_view,
+    hello_view,
+    calculate_view
+)
+
+4. Dodanie w urlpatterns:
+
+path("calculate/", calculate_view),
 
 
-class ProduktViewSet(viewsets.ModelViewSet):
-    queryset = Produkt.objects.all()
-    serializer_class = ProduktSerializer
+5.Dodanie w produkty/views.py funkcji kalkulatora:
 
+@api_view(["GET"])
+def calculate_view(request):
 
-class NoteViewSet(viewsets.ModelViewSet):
-    queryset = Note.objects.all()
-    serializer_class = NoteSerializer
+    num1 = request.GET.get("num1")
+    num2 = request.GET.get("num2")
+    operation = request.GET.get("operation")
 
+    return Response({
+        "num1": num1,
+        "num2": num2,
+        "operation": operation
+    })
 
-def set_name_view(request):
-    name = request.GET.get("name")
-
-    if not name:
-        return HttpResponse("Podaj imię w adresie, np. /api/set-name/?name=Anna")
-
-    response = HttpResponse(f"Ustawiono ciasteczko dla użytkownika: {name}")
-    response.set_cookie("user_name", name)
-
-    return response
-
-
-def hello_view(request):
-    name = request.COOKIES.get("user_name", "Gość")
-
-    return HttpResponse(f"Witaj, {name}!")
-
+6. rozbudowanie funkcji calculate_view w produkty/views.py :
 
 @api_view(["GET"])
 def calculate_view(request):
