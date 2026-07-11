@@ -1,3 +1,5 @@
+1. modyfikacja kodu produkty/serializers.py:
+
 from rest_framework import serializers
 
 from .models import Produkt, Note, Author, Book
@@ -45,3 +47,53 @@ class BookSerializer(serializers.ModelSerializer):
             "author",
             "author_name",
         ]
+
+
+
+
+2. test działania:
+
+POST http://127.0.0.1:8000/api/notes/
+
+w body w raw:
+
+{
+    "title": "ABC",
+    "content": "Przykład zbyt krótkiego tytułu."
+}
+
+odpowiedź:
+
+400 Bad Request
+
+{
+    "title": [
+        "Tytuł notatki musi mieć co najmniej 5 znaków."
+    ]
+}
+
+
+tytuł o odpowiedniej długości:
+
+
+http://127.0.0.1:8000/api/notes/
+
+w body w raw:
+
+{
+    "title": "poprawny tytul notatki",
+    "content": "To jest przykład poprawnego tytułu  notatki."
+}
+
+odpowiedź:
+
+201 created
+
+JSON:
+
+{
+    "id": 2,
+    "title": "poprawny tytul notatki",
+    "content": "To jest przykład poprawnego tytułu  notatki.",
+    "created_at": "2026-07-11T18:29:20.518093Z"
+}

@@ -1,0 +1,29 @@
+1. modyfikacja klasy ProduktViewSet:
+
+class ProduktViewSet(viewsets.ModelViewSet):
+    queryset = Produkt.objects.all()
+    serializer_class = ProduktSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        min_price = self.request.GET.get("min_price")
+        max_price = self.request.GET.get("max_price")
+
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
+
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price)
+
+        return queryset
+
+2. wykonanie testów filtrowania:
+
+http://127.0.0.1:8000/api/produkty/
+
+http://127.0.0.1:8000/api/produkty/?min_price=100
+
+
+http://127.0.0.1:8000/api/produkty/?min_price=100&max_price=200
+
