@@ -1,0 +1,33 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Lista kategorii</title>
+    
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+
+</head>
+
+<body>
+
+    <h1>Lista kategorii</h1>
+
+   <ul>
+    {% for category in categories %}
+        <li>
+            <a href="{% url 'category-detail' category.pk %}">
+                {{ category.name }}
+            </a>
+        </li>
+    {% empty %}
+        <li>Brak kategorii.</li>
+    {% endfor %}
+</ul>
+
+</body>
+
+</html>

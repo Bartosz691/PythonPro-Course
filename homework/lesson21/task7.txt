@@ -1,0 +1,101 @@
+Tworzenie relacji pomiędzy Article a Category:
+
+1. modyfikacja kodu w blog/models.py:
+
+from django.db import models
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.title
+
+
+2. wykonanie migracji:
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+
+3. dodanie w PowerShellu kategorii:
+
+>>> from blog.models import Article, Category
+
+>>> sport = Category.objects.get(name="Sport")                                      
+>>> technologia = Category.objects.get(name="Technologia")
+>>> kultura = Category.objects.get(name="Kultura")
+
+>>> Article.objects.create(
+...     title="Wyniki meczu",
+...     content="Treść artykułu sportowego.",
+...     category=sport
+... )
+<Article: Wyniki meczu>
+
+
+>>> Article.objects.create(
+...     title="Nowy komputer",
+...     content="Treść artykułu technologicznego.",
+...     category=technologia
+... )                                                      
+<Article: Nowy komputer>
+
+
+>>> Article.objects.create(
+...     title="Nowa wystawa znanego artysty",
+...     content="Treść artykułu kulturalnego.",
+...     category=kultura
+... )
+<Article: Nowa wystawa znanego artysty>
+>>> exit()
+
+
+4. modyfikacja category_detail.html:
+
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category.name }}</title>
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+</head>
+
+<body>
+    <h1>{{ category.name }}</h1>
+
+    <h2>Artykuły w tej kategorii</h2>
+
+    <ul>
+        {% for article in category.article_set.all %}
+            <li>{{ article.title }}</li>
+        {% empty %}
+            <li>Brak artykułów w tej kategorii.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'category-list' %}">
+        Powrót
+    </a>
+</body>
+
+</html>

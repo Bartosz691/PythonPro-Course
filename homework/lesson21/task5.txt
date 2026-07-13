@@ -1,0 +1,17 @@
+1. uruchomienie PowerShell:
+
+python manage.py shell
+
+2. wpisano następujące polecenia w celu sprawdzenia zapytania:
+
+from blog.models import Category
+
+sport = Category.objects.get(name="Sport")
+
+>>> sport
+<Category: Sport>
+
+>>> sport.name
+'Sport'
+
+exit()

@@ -1,0 +1,71 @@
+1. dodanie w widokach blog/veiws.py widoku kategorii:
+
+from django.shortcuts import render
+
+from .models import Category
+
+
+def category_list_view(request):
+    categories = Category.objects.all()
+
+    return render(
+        request,
+        "blog/category_list.html",
+        {
+            "categories": categories
+        }
+    )
+
+
+2. utworzenie pliku blog/urls.py z następującą zawartością:
+
+from django.urls import path
+
+from .views import category_list_view
+
+
+urlpatterns = [
+    path("categories/", category_list_view, name="category-list"),
+]
+
+
+3. modyfikacja kodu w pliku config/urls.py:
+
+from django.contrib import admin
+from django.urls import include, path
+
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("", include("blog.urls")),
+]
+
+
+3. utworzenie następującej struktury szablonów:
+
+blog/templates/blog/category_list.html
+
+kod strony category_list.html:
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista kategorii</title>
+</head>
+<body>
+    <h1>Lista kategorii</h1>
+
+    <ul>
+        {% for category in categories %}
+            <li>{{ category.name }}</li>
+        {% empty %}
+            <li>Brak kategorii.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
+4.uruchomienie serwera i sprawdzenie czy strona działa:
+
+python manage.py runserver    http://127.0.0.1:8000/categories/

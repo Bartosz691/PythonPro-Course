@@ -1,0 +1,14 @@
+1. utworzenie kaskadowego arkusza styli style.css w blog/static/blog/style.css i dodanie koloru tła dla strony.
+
+body {
+    background-color: #6edeb3;
+}
+
+2. dodanie w kodzie strony odniesienia do style.css 
+
+{% load static %}
+
+ <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+
+
+3. przeładowanie serwera python manage.py runserver

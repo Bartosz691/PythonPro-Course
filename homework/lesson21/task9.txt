@@ -1,0 +1,48 @@
+zmiana tytułu panelu administratora
+
+
+1. w config/settings.py dopisano "DIRS": [BASE_DIR / "templates"],
+
+2. utworzenie strony base_site.html w templates/admin/base_site.html:
+
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}
+    Panel Administratora Mojej Strony
+{% endblock %}
+
+{% block branding %}
+
+    <div id="site-name">
+        <a href="{% url 'admin:index' %}">
+            Panel Administratora Mojej Strony
+        </a>
+    </div>
+
+{% endblock %}
+
+3. dodanie funkcji administratora w blog/admin.py:
+
+from django.contrib import admin
+
+from .models import Article, Category
+
+
+admin.site.register(Category)
+admin.site.register(Article)
+
+4. utworzenie administratora:
+
+python manage.py createsuperuser
+
+(.venv) PS D:\PythonPro-Course\homework\lesson21> python manage.py createsuperuser
+Username (leave blank to use 'theha'): Bartosz
+Email address: bartosz@wp.pl
+Password: 
+Password (again): 
+
+
+5.uruchomienie serwera ponownie python manage.py runserver
+
+6. przetestowanie panelu administratora http://127.0.0.1:8000/admin/

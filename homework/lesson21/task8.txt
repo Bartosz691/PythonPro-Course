@@ -1,0 +1,150 @@
+1. zmiana w kodzie blog/models.py:
+
+from django.db import models
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE
+    )
+
+    is_published = models.BooleanField(
+        default=True
+    )
+
+    def __str__(self):
+        return self.title
+
+2.wykonanie migracji:
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+3. dodanie funkcji widoku listy artykułów w blog/views.py:
+
+from datetime import timedelta
+
+from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
+
+from .models import Article, Category
+
+
+def category_list_view(request):
+    categories = Category.objects.all()
+
+    return render(
+        request,
+        "blog/category_list.html",
+        {
+            "categories": categories
+        }
+    )
+
+
+def category_detail_view(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+
+    return render(
+        request,
+        "blog/category_detail.html",
+        {
+            "category": category
+        }
+    )
+
+
+def article_list_view(request):
+    articles = Article.objects.filter(
+        is_published=True
+    ).order_by("-pub_date")
+
+    new_article_date = timezone.now() - timedelta(days=3)
+
+    for article in articles:
+        article.is_new = article.pub_date >= new_article_date
+
+    return render(
+        request,
+        "blog/article_list.html",
+        {
+            "articles": articles
+        }
+    )
+
+
+4.modyfikacja blog/urls.py:
+
+from django.urls import path
+
+from .views import (
+    article_list_view,
+    category_detail_view,
+    category_list_view,
+)
+
+
+urlpatterns = [
+    path("categories/", category_list_view, name="category-list"),
+    path(
+        "categories/<int:pk>/",
+        category_detail_view,
+        name="category-detail"
+    ),
+    path("articles/", article_list_view, name="article-list"),
+]
+
+5. dodanie strony article_list.html w blog/templates/blog:
+
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista artykułów</title>
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+</head>
+
+<body>
+
+    <h1>Lista opublikowanych artykułów</h1>
+
+    <ul>
+        {% for article in articles %}
+            <li>
+                <strong>{{ article.title }}</strong>
+
+                {% if article.is_new %}
+                    <span>NOWOŚĆ!</span>
+                {% endif %}
+
+                <p>{{ article.content }}</p>
+
+                <small>
+                    {{ article.pub_date|date:"d.m.Y H:i" }}
+                </small>
+            </li>
+        {% empty %}
+            <li>Brak opublikowanych artykułów.</li>
+        {% endfor %}
+    </ul>
+
+</body>
+
+</html>

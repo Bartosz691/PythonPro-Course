@@ -1,0 +1,14 @@
+1. uruchomienie PowerShell
+
+python manage.py shell
+
+2. dodanie kilku danych o różnych kategoriach: 
+Category.objects.create(name="Sport")
+Category.objects.create(name="Technologia")
+Category.objects.create(name="Kultura)
+
+3.sprawdzenie czy kategorie się wyświetlają:
+
+Category.object.all()
+
+4.wyjście po sprawdzeniu komendą: exit()
