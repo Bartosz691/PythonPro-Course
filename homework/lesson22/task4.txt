@@ -1,0 +1,7 @@
+1. instalacja Fakera:
+
+pip install Faker
+
+2. aktualizacja requirements. txt:
+
+pip freeze > reguirements.txt

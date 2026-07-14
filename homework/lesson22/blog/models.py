@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Category(models.Model):
@@ -19,9 +20,8 @@ class Post(models.Model):
     content = models.TextField()
 
     publication_date = models.DateTimeField(
-        auto_now_add=True
-    )
-
+    default=timezone.now
+)
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,

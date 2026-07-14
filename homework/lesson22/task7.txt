@@ -1,0 +1,306 @@
+1. uruchomienie pliku seed_blog.py, który będziemy mogli uruchomić za pomocą polecenia:
+
+python manage.py seed_blog
+
+polecenie to ma za zadanie usunąć stare posty i kategorie, utworzyć kilka kategorii, wygenerować 100 losowych postów oraz przypisać  każdy post do losowej kategorii.
+
+
+2. utworzenie następującej struktury katalogów i plików:
+
+blog/management/__init__.py
+
+ commands/__init__.py/seed_blog.py
+
+3. uzupełnienie zawartości seed_blog.py następującym kodem:
+
+import random
+
+from django.core.management.base import BaseCommand
+from faker import Faker
+
+from blog.models import Category, Post
+
+
+class Command(BaseCommand):
+    help = "Usuwa stare dane i tworzy kategorie oraz 100 losowych postów"
+
+    def handle(self, *args, **options):
+        fake = Faker("pl_PL")
+
+        self.stdout.write("Usuwanie istniejących postów i kategorii...")
+
+        Post.objects.all().delete()
+        Category.objects.all().delete()
+
+        category_names = [
+            "Technologia",
+            "Podróże",
+            "Kulinaria",
+            "Sport",
+            "Kultura",
+            "Nauka",
+            "Zdrowie",
+        ]
+
+        categories = []
+
+        for name in category_names:
+            category = Category.objects.create(name=name)
+            categories.append(category)
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Utworzono {len(categories)} kategorii."
+            )
+        )
+
+        posts = []
+
+        for _ in range(100):
+            post = Post(
+                title=fake.sentence(nb_words=6),
+                content=fake.paragraph(nb_sentences=8),
+                publication_date=fake.date_time_this_year(
+                    tzinfo=None
+                ),
+                category=random.choice(categories),
+            )
+
+            posts.append(post)
+
+        Post.objects.bulk_create(posts)
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Utworzono {len(posts)} postów."
+            )
+        )
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                "Generowanie danych zakończone."
+            )
+        )
+
+4. modyfikacja publikacji w blog/models.py, dodanie importu strefy czasowej
+
+from django.utils import timezone
+
+oraz zmiana kodu publikacji:
+
+publication_date = models.DateTimeField(
+    default=timezone.now
+)
+
+5. wykonanie migracji:
+
+python manage.py makemigrations
+python manage.py migrate
+
+6. sprawdzenie działania komendy python manage.py seed_blog:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson22> python manage.py seed_blog
+Usuwanie istniejących postów i kategorii...
+Utworzono 7 kategorii.
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-13 09:33:22) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-05-26 09:48:17) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-07-13 09:31:18) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-14 19:07:46) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-01 00:50:46) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-08 08:18:18) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-11 20:03:35) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-01 20:57:18) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-20 19:46:25) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-05-13 08:29:39) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-31 08:32:53) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-05-04 03:35:20) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-29 14:43:00) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-30 21:14:47) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-29 03:25:55) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-22 13:29:45) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-05-30 14:34:16) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-09 21:43:18) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-27 01:36:04) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-17 12:20:55) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-18 11:17:32) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-16 07:40:19) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-14 12:22:05) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-10 01:57:24) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-22 22:39:40) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-21 03:17:26) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-07-03 12:11:27) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-05-04 01:35:46) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-03 21:38:11) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-08 08:26:12) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-10 12:18:17) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-05 13:26:09) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-01 19:39:53) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-07 02:52:59) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-20 03:44:25) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-02 10:39:54) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-09 05:42:34) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-10 08:15:17) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-28 00:37:48) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-26 06:53:13) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-16 02:54:24) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-05 10:27:35) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-05 11:03:39) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-24 02:37:51) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-05-20 08:44:11) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-20 18:18:24) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-06 19:36:33) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-20 22:46:19) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-23 00:04:10) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-25 03:59:33) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-15 19:33:31) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-02 14:55:40) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-25 19:09:31) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-07-10 07:36:42) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-05-25 13:42:49) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-02 05:08:05) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-10 01:47:50) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-25 11:55:57) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-29 00:29:34) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-14 03:05:52) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-10 03:52:00) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-27 10:45:02) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-07-07 13:41:04) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-07-04 02:04:54) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-03 01:10:05) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-05 20:21:36) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-19 12:12:20) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-06 06:59:17) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-25 01:36:51) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-25 03:48:17) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-06 12:28:08) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-06 09:47:11) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-05-05 11:01:29) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-05-27 18:31:48) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-17 13:45:23) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-11 08:31:31) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-07-03 09:20:17) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-25 10:54:20) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-24 14:34:34) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-05 05:34:57) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-09 01:14:18) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-05-16 19:39:49) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-06 16:25:52) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-27 17:05:06) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-21 10:11:34) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-19 20:23:48) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-28 09:33:34) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-04-11 06:55:25) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-11 11:38:45) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-20 07:48:46) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-01 14:03:26) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-08 19:31:56) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-03 11:20:52) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-02-14 06:44:14) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-13 12:59:38) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-19 21:57:21) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-06-03 05:16:28) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-03-08 00:59:41) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-28 19:45:37) while time zone support is active.
+  warnings.warn(
+D:\PythonPro-Course\homework\lesson22\.venv\Lib\site-packages\django\db\models\fields\__init__.py:1670: RuntimeWarning: DateTimeField Post.publication_date received a naive datetime (2026-01-20 22:19:06) while time zone support is active.
+  warnings.warn(
+Utworzono 100 postów.
+Generowanie danych zakończone.

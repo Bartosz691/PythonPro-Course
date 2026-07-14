@@ -1,5 +1,8 @@
+1. modyfikacja kodu views.py:
+
+
 from datetime import timedelta
-from django.db.models import Q
+
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 
@@ -69,24 +72,81 @@ def article_list_view(request):
         }
     )
 
+
 def home_view(request):
-    posts = Post.objects.order_by("-publication_date")
-
-    query = request.GET.get("q")
-
-    if query:
-        posts = posts.filter(
-            Q(title__icontains=query) |
-            Q(content__icontains=query)
-        )
-
-    posts = posts[:5]
+    posts = Post.objects.order_by("-publication_date")[:5]
 
     return render(
         request,
         "blog/home.html",
         {
             "posts": posts,
-            "query": query or "",
         }
     )
+
+
+
+2. dodanie importu home_view w blog/urls.py:
+
+from django.urls import path
+
+from .views import (
+    article_list_view,
+    category_detail_view,
+    category_list_view,
+    category_posts_view,
+    home_view,
+)
+
+
+urlpatterns = [
+    path("", home_view, name="home"),
+    path(
+        "category/<int:category_id>/",
+        category_posts_view,
+        name="category-posts"
+    ),
+    path("categories/", category_list_view, name="category-list"),
+    path(
+        "categories/<int:pk>/",
+        category_detail_view,
+        name="category-detail"
+    ),
+    path("articles/", article_list_view, name="article-list"),
+]
+
+
+3.  utworzenie strony home.html w blog/templates/blog:
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Najnowsze posty</title>
+</head>
+
+<body>
+
+    <h1>5 najnowszych postów</h1>
+
+    <ul>
+        {% for post in posts %}
+            <li>
+                <strong>{{ post.title }}</strong><br>
+                {{ post.publication_date }}
+            </li>
+        {% empty %}
+            <li>Brak postów.</li>
+        {% endfor %}
+    </ul>
+
+</body>
+
+
+</html>
+
+4. uruchomienie serwera i test strony:
+
+python manage.py runserver http://127.0.0.1:8000/
+

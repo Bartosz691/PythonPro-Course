@@ -1,0 +1,47 @@
+1. dodanie import Q w views.py:
+
+from django.db.models import Q
+
+2. zmiana funkcji def home_view(request):
+
+def home_view(request):
+    posts = Post.objects.order_by("-publication_date")
+
+    query = request.GET.get("q")
+
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query)
+        )
+
+    posts = posts[:5]
+
+    return render(
+        request,
+        "blog/home.html",
+        {
+            "posts": posts,
+            "query": query or "",
+        }
+    )
+
+3. dodanie formularza w home.html:
+
+<form method="get">
+
+    <input
+        type="text"
+        name="q"
+        value="{{ query }}"
+        placeholder="Szukaj postów">
+
+    <button type="submit">
+        Szukaj
+    </button>
+
+</form>
+
+<hr>
+
+4. uruchomienie serwera python manage.py runserver i test strony http://127.0.0.1:8000/ po wpisaniu wyszukiwania zmienia się adres: http://127.0.0.1:8000/?q=Python

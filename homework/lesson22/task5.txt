@@ -1,0 +1,32 @@
+1. utworzenie pliku faker_test.py w folderze lesson22
+
+2. w folderze faker_test.py napisano następujący kod:
+
+from faker import Faker
+
+
+fake = Faker("pl_PL")
+
+
+print("10 losowych polskich imion i nazwisk:")
+
+for _ in range(10):
+    print(fake.name())
+
+
+print("\n10 losowych zdań:")
+
+for _ in range(10):
+    print(fake.sentence())
+
+3. uruchomienie skryptu python faker_test.py i przetestowanie:
+
+Panna żaba otwierać zupa czasem stosunek cel bar.
+Organizm przybyć tkanina kuchnia.
+Nazwa walczyć region żaden wrogość Niemiec wczesny.
+Krzesło broń jądro 60 ogon dany wokół literacki.
+Dotyczyć późny zjeść.
+Mama marka tysiąc tajemnica.
+Podłoga mapa wstyd.
+Dotyczyć kilka święto prawda określenie upadek jego.
+Archipelag dziewiąty Polak pod waluta.
