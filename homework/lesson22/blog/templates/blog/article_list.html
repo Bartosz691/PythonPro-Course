@@ -1,0 +1,58 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista artykułów</title>
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+</head>
+
+<body>
+    <h1>Lista opublikowanych artykułów</h1>
+
+    <form method="get">
+        <label for="q">Szukaj po tytule:</label>
+
+        <input
+            type="text"
+            id="q"
+            name="q"
+            value="{{ query }}"
+            placeholder="Wpisz tytuł"
+        >
+
+        <button type="submit">
+            Szukaj
+        </button>
+
+        <a href="{% url 'article-list' %}">
+            Wyczyść
+        </a>
+    </form>
+
+    <ul>
+        {% for article in articles %}
+            <li>
+                <strong>{{ article.title }}</strong>
+
+                {% if article.is_new %}
+                    <span>NOWOŚĆ!</span>
+                {% endif %}
+
+                <p>{{ article.content }}</p>
+
+                <small>
+                    Kategoria: {{ article.category.name }}<br>
+                    Data: {{ article.pub_date|date:"d.m.Y H:i" }}
+                </small>
+            </li>
+        {% empty %}
+            <li>Nie znaleziono artykułów.</li>
+        {% endfor %}
+    </ul>
+
+</body>
+
+</html>

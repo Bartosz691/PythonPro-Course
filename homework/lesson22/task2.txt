@@ -1,0 +1,76 @@
+1. dodanie funkcji def category_posts_view pliku views.py w katalogu blog:
+
+
+def category_posts_view(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+
+    posts = Post.objects.filter(category=category)
+
+    return render(
+        request,
+        "blog/category_posts.html",
+        {
+            "category": category,
+            "posts": posts,
+        }
+    )
+
+
+2. w blog/urls.py dodano category_posts_view
+
+from django.urls import path
+
+from .views import (
+    article_list_view,
+    category_detail_view,
+    category_list_view,
+    category_posts_view,
+)
+
+
+urlpatterns = [
+    path("categories/", category_list_view, name="category-list"),
+    path(
+        "categories/<int:pk>/",
+        category_detail_view,
+        name="category-detail"
+    ),
+    path("articles/", article_list_view, name="article-list"),
+]
+
+
+3. modyfikacja urlpatterns:
+
+path(
+    "category/<int:category_id>/",
+    category_posts_view,
+    name="category-posts"
+),
+
+4. utworzenie category_posts.html w blog/templates/blog/ :
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category.name }}</title>
+</head>
+
+<body>
+    <h1>{{ category.name }}</h1>
+
+    <ul>
+        {% for post in posts %}
+            <li>{{ post.title }}</li>
+        {% empty %}
+            <li>Brak postów w tej kategorii.</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
+
+5. test działania strony:
+
+http://127.0.0.1:8000/category/1/
