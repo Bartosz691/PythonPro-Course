@@ -1,0 +1,100 @@
+1. dopisanie kodu w pliku blog/models.py, umożliwiającego dodawanie wielu tagów do jednego posta:
+
+tags = models.ManyToManyField(
+    Tag,
+    related_name="posts",
+    blank=True
+)
+
+================================================
+
+from django.db import models
+from django.utils import timezone
+
+
+class Category(models.Model):
+    name = models.CharField(
+        max_length=100,
+        unique=True
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class Tag(models.Model):
+    name = models.CharField(
+        max_length=100,
+        unique=True
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class Post(models.Model):
+    title = models.CharField(
+        max_length=200
+    )
+
+    content = models.TextField()
+
+    publication_date = models.DateTimeField(
+        default=timezone.now
+    )
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name="posts"
+    )
+
+    tags = models.ManyToManyField(
+        Tag,
+        related_name="posts",
+        blank=True
+    )
+
+    def __str__(self):
+        return self.title
+
+
+2. wykonanie migracji:
+
+python manage.py makemigrations
+python manage.py migrate
+
+3. dodanie funkcji zarządzania tagami w panelu administratora:
+
+from django.contrib import admin
+
+from .models import Category, Post, Tag
+
+
+admin.site.register(Category)
+admin.site.register(Post)
+admin.site.register(Tag)
+
+
+4. przetestowanie działania w shellu:
+
+python manage.py shell
+
+(.venv) PS D:\PythonPro-Course\homework\lesson22> python manage.py shell
+15 objects imported automatically (use -v 2 for details).
+
+Ctrl click to launch VS Code Native REPL
+Python 3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from blog.models import Post, Tag
+>>> python_tag = Tag.objects.create(name="Python")
+>>> django_tag = Tag.objects.create(name="Django")
+>>> post = Post.objects.first()
+>>> post.tags.add(python_tag, django_tag)
+>>> post.tags.all()
+<QuerySet [<Tag: Python>, <Tag: Django>]>
+>>> python_tag.posts.all()
+<QuerySet [<Post: Karta informacja trudny powolny zewnętrzny smak.>]>
+>>> exit()
+now exiting InteractiveConsole...
