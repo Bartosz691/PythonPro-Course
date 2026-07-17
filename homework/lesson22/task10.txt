@@ -1,0 +1,114 @@
+1. instalacja paczki django-allauth:
+
+pip install django-allauth
+
+2. aktualizacja zależności:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson22> pip freeze > requirements.txt
+(.venv) PS D:\PythonPro-Course\homework\lesson22> 
+
+3. modyfikacja wpisu INSTALLED_APS w pliku settings.py w folderze config:
+
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    "allauth",
+    "allauth.account",
+
+    "blog",
+]
+
+4. dodanie "allauth.account.middleware.AccountMiddleware", w MIDDLEWARE:
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+
+    "allauth.account.middleware.AccountMiddleware",
+
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+5. Na końcu settings.py dodanie backendów pierwszy z nich ma zachować normalne logowanie Django a drugi obsługuje logowanie allauth
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+6. dodanie prostej konfiguracji kont:
+
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
+7. dodanie ścieżki dla allauth w pliku urls.py:
+
+from django.contrib import admin
+from django.urls import include, path
+
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("accounts/", include("allauth.urls")),
+    path("", include("blog.urls")),
+]
+
+9. wykonanie migracji:
+
+python manage.py migrate
+
+
+10. dodanie formularza rejestracji i logowania w home.html:
+
+
+<nav>
+    {% if user.is_authenticated %}
+        <p>
+            Zalogowany użytkownik: {{ user.username }}
+        </p>
+
+        <form method="post" action="{% url 'account_logout' %}">
+            {% csrf_token %}
+            <button type="submit">Wyloguj</button>
+        </form>
+    {% else %}
+        <a href="{% url 'account_login' %}">
+            Zaloguj
+        </a>
+
+        <a href="{% url 'account_signup' %}">
+            Zarejestruj się
+        </a>
+    {% endif %}
+</nav>
+
+<hr>
+
+
+11. uruchomienie serwera:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson22> python manage.py runserver
+Watching for file changes with StatReloader
+Performing system checks...
+
+12. przetestowanie działania logowania i zakładania konta oraz strony głównej:
+
+http://127.0.0.1:8000/accounts/signup/
+
+
+http://127.0.0.1:8000/accounts/login/
+
+
+http://127.0.0.1:8000/
+
