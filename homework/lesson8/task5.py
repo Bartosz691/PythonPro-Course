@@ -1,32 +1,34 @@
-from pathlib import Path
-
-log_path = Path("log.txt")
-
 while True:
+    log = open("log.txt", "a", encoding="utf-8")
+
     try:
         fnum = float(input("Podaj pierwszą liczbę: "))
         snum = float(input("Podaj drugą liczbę: "))
-        dzialanie = str(input("Podaj znak działania [+,-,/,*] lub koniec, aby zakończyć "))
+        dzialanie = input(
+            "Podaj działanie (+, -, *, /) lub 'koniec': "
+        )
 
         if dzialanie == "koniec":
             break
 
-        func_dict = {
-            "+": lambda x, y: x + y,
-            "-": lambda x, y: x - y,
-            "*": lambda x, y: x * y,
-            "/": lambda x, y: x / y
-        }
+        if dzialanie == "+":
+            wynik = fnum + snum
+        elif dzialanie == "-":
+            wynik = fnum - snum
+        elif dzialanie == "*":
+            wynik = fnum * snum
+        elif dzialanie == "/":
+            wynik = fnum / snum
+        else:
+            raise ValueError("Niepoprawna operacja.")
 
-        wynik = func_dict[dzialanie](fnum, snum)
+    except (ValueError, ZeroDivisionError) as e:
+        print("Wystąpił błąd:", e)
+        log.write(f"{type(e).__name__}: {e}\n")
+
+    else:
         print("Wynik:", wynik)
 
-    except Exception as e:
-        print("Wystąpił błąd:", e)
-
-
-        with open(log_path, "a", encoding="utf-8") as log:
-            log.write(f"Błąd: {type(e).__name__} - {e}\n")
-
     finally:
-        print("Kolejna runda...\n")
+        log.close()
+        print("Kolejna operacja...")

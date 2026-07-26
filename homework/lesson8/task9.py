@@ -1,13 +1,15 @@
 from pathlib import Path
 
-log_path = Path("log2.txt")
+
+file_path = Path("plik.txt")
 
 try:
-    f = open(log_path, "a", encoding="utf-8")
-    f.write("Przykładowy wpis\n")
+    with open(file_path, "r", encoding="utf-8") as f:
+        zawartosc = f.read()
+        print(zawartosc)
 
-except Exception as e:
-    print("Błąd:", e)
+except FileNotFoundError:
+    print("Plik nie istnieje.")
 
-finally:
-    f.close() 
+except PermissionError:
+    print("Brak uprawnień do odczytu pliku.")

@@ -1,8 +1,13 @@
 from pathlib import Path
 
+
+class BladPrzetwarzaniaDanychError(Exception):
+    pass
+
+
 def przetworz_dane(dane, klucz):
     log_path = Path("log1.txt")
-    
+
     try:
         return dane[klucz]
 
@@ -11,9 +16,9 @@ def przetworz_dane(dane, klucz):
         with open(log_path, "a", encoding="utf-8") as log:
             log.write(f"KeyError: brak klucza {klucz}\n")
 
-
-        raise Exception(f"Błąd przetwarzania danych - brak klucza: {klucz}") from e
-
+        raise BladPrzetwarzaniaDanychError(
+            f"Błąd przetwarzania danych - brak klucza: {klucz}"
+        ) from e
 
 
 dane = {
@@ -28,5 +33,5 @@ try:
     wynik = przetworz_dane(dane, klucz)
     print("Wynik:", wynik)
 
-except Exception as e:
+except BladPrzetwarzaniaDanychError as e:
     print("Wystąpił błąd:", e)

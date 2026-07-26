@@ -1,21 +1,29 @@
 while True:
     try:
-         fnum = input("Podaj pierwszą liczbę: ")
-         snum = input("Podaj drugą liczbę: ")
-         dzialanie  = input("podaj działanie [+,-,/,*]")  
-         func_dict = {"+":  lambda x, y: x+y, 
-                      "-":lambda x, y: x-y,
-                      "*": lambda x, y: x*y,
-                      "/": lambda x, y: x/y
-                      }  
-         func_dict[dzialanie](fnum, sum)
-    except ValueError as e:
-        err = e
-        print("Podano niepoprawną liczbę: ", e.args[0].split(' ')[-1])
-    except KeyError:
-        print("niepoprawne działanie ")
+        fnum = float(input("Podaj pierwszą liczbę: "))
+        snum = float(input("Podaj drugą liczbę: "))
+        dzialanie = input("Podaj działanie (+, -, *, /): ")
+
+        if dzialanie == "+":
+            wynik = fnum + snum
+        elif dzialanie == "-":
+            wynik = fnum - snum
+        elif dzialanie == "*":
+            wynik = fnum * snum
+        elif dzialanie == "/":
+            wynik = fnum / snum
+        else:
+            print("Niepoprawna operacja.")
+            continue
+
+    except ValueError:
+        print("Błąd: musisz podać liczby.")
+
     except ZeroDivisionError:
-        print("Druga liczba nie może wynosić 0 w przypadku dzielenia.")
+        print("Błąd: nie można dzielić przez zero.")
+
+    else:
+        print(f"Wynik: {wynik}")
+
     finally:
-        print("runda kolejna")
-    break
+        print("Kolejna operacja...")
