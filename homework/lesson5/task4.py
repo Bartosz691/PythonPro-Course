@@ -1,8 +1,4 @@
-slowo = input("podaj slowo: ")
+slowo = input("Podaj słowo: ")
 
-dlugosc_slowo = len(slowo)
-for idx in range(dlugosc_slowo):
-    print(idx, slowo[idx])
-    
-for idx, znak in enumerate(slowo):
-    print(idx, znak)
+for indeks, litera in enumerate(slowo):
+    print(f"{indeks}: {litera}")

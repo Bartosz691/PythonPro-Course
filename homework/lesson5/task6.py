@@ -1,11 +1,10 @@
 sekret = 42
 
-#while True:
- #   liczba = int(input("podaj liczbe: "))
- #   if liczba == sekret:
- #       break
+while True:
+    liczba = int(input("Podaj liczbę: "))
 
-#liczba = None 
-while sekret != liczba:
-    liczba = int(input("podaj liczbe: "))
-print("Gratulacje odgadłeś liczbe! ")
+    if liczba == sekret:
+        print("Gratulacje! Odgadłeś liczbę!")
+        break
+    else:
+        print("Zła liczba. Spróbuj ponownie.")

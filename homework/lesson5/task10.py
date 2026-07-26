@@ -1,11 +1,24 @@
-kursy = {"USD": 4.0, "EUR": 4.3}
+kursy = {
+    "USD": 4.0,
+    "EUR": 4.3
+}
+
 while True:
-    odpowiedz = input("podaj kwote i walute w formacie 'kwora waluta'")
-    kwota, waluta = odpowiedz.split()
-    if waluta.upper() not in kursy:
-        print("Niepoprawna waluta")
-        continue
-    print(f"{kwota}PLN w {waluta} to {float(kwota) / kursy[waluta.upper()]:.2f}")
-    
-    if input("czy chcesz zakończyć t/n? ")[0].lower() == "t":
+    kwota = float(input("Podaj kwotę w PLN: "))
+    waluta = input("Podaj walutę (USD/EUR): ").strip().upper()
+
+    if waluta == "USD":
+        wynik = kwota / kursy["USD"]
+        print(f"{kwota:.2f} PLN = {wynik:.2f} USD")
+
+    elif waluta == "EUR":
+        wynik = kwota / kursy["EUR"]
+        print(f"{kwota:.2f} PLN = {wynik:.2f} EUR")
+
+    else:
+        print("Niepoprawna waluta.")
+
+    odpowiedz = input("Czy chcesz kontynuować? (tak/nie): ").strip().lower()
+
+    if odpowiedz == "nie":
         break

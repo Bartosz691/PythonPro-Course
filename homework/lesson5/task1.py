@@ -1,12 +1,14 @@
 wiek = int(input("Podaj wiek: "))
 
-if wiek >= 0 and wiek < 1:
-    print("Niemowle")
-elif wiek >= 2 or wiek <= 12:
+if 0 <= wiek <= 1:
+    print("Niemowlę")
+elif 2 <= wiek <= 12:
     print("Dziecko")
-elif wiek >= 13 and wiek <= 17:
+elif 13 <= wiek <= 17:
     print("Nastolatek")
-elif wiek >= 18 and wiek <= 64:
+elif 18 <= wiek <= 64:
     print("Dorosły")
-else:
+elif wiek >= 65:
     print("Senior")
+else:
+    print("Niepoprawny wiek")
