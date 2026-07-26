@@ -1,18 +1,10 @@
-n = int(input("Podaj ile liczb: "))
-
-
-def oblicz_srednia(n: int) -> int|float:
-    
-    result = 0
-    for _ in range(n):
-        a = int(input("liczba: "))
-        
-        result = result + a
-    
-    if result is None:
+def oblicz_srednia(*args):
+    if len(args) == 0:
         return 0
-    else:
-        average = result/n
-        return average
-    
-print(oblicz_srednia(n))
+
+    return sum(args) / len(args)
+
+
+print(oblicz_srednia(5, 4, 3, 5, 4))
+print(oblicz_srednia(6, 6, 5))
+print(oblicz_srednia())

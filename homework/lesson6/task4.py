@@ -1,14 +1,27 @@
-lst = []
-print("id po stworzeniu", id(lst))
+POZIOM_DOSTEPU = "user"
 
-def funkcja_przekazanie_przez_wskazanie(lista: list):
-    """ jakiś opis funkcji
-    args:
-        linia 2
-        linia 3
-    """
-    print("id wewnatrz listy", id(lista))
-    lista.append("x")
-    
-funkcja_przekazanie_przez_wskazanie(lst)
-print("lista po funkcji", lst)
+
+def zmien_poziom_dostepu():
+    POZIOM_DOSTEPU = "admin"
+
+    print(
+        "Wartość POZIOM_DOSTEPU wewnątrz funkcji:",
+        POZIOM_DOSTEPU
+    )
+
+
+print(
+    "Wartość przed wywołaniem funkcji:",
+    POZIOM_DOSTEPU
+)
+
+zmien_poziom_dostepu()
+
+print(
+    "Wartość po wywołaniu funkcji:",
+    POZIOM_DOSTEPU
+)
+
+# Zmienna POZIOM_DOSTEPU utworzona wewnątrz funkcji jest zmienną lokalną.
+# Ma taką samą nazwę jak zmienna globalna, ale jej nie zmienia.
+# Dlatego wewnątrz funkcji widzimy "admin", a poza funkcją nadal "user".

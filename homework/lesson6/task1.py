@@ -4,7 +4,7 @@ liczba2 = float(input("Podaj drugą liczbę: "))
 
 znak = input("Podaj znak operacji: ")
 
-def kalkulacja(liczba1: float | int, licba2: float | int, znak: str) -> float|int|str:
+def kalkulacja(liczba1: float | int, liczba2: float | int, znak: str) -> float|int|str:
     if znak == '+':
         result = liczba1 + liczba2
     elif znak == '-':

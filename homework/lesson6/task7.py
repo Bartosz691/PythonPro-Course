@@ -1,15 +1,13 @@
-def analiza_listy(lista: list[int]) -> tuple[float | int]:
-    min = None
-    max_ = None
-    sum_ = 0
-    for liczba in lista:
-        if min is None or liczba < min:
-            min = liczba
-        if max_ is None or liczba > max_:
-            max_ = liczba
-        sum_ += liczba
-    
-        return min, max_, sum_
- 
-print(analiza_listy(list(range(10))))
-            
+def analiza_listy(lista: list[int]) -> tuple[int, int, int]:
+    minimum = min(lista)
+    maksimum = max(lista)
+    suma = sum(lista)
+
+    return minimum, maksimum, suma
+
+
+liczby = [1, 5, 8, 2, 10, 3]
+
+wynik = analiza_listy(liczby)
+
+print(wynik)

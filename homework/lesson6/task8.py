@@ -1,9 +1,28 @@
-def stworz_profil(imie: str, **dane_kontaktowe):
-     print("imie", imie, "dane_kontaktowe", dane_kontaktowe, "type", type(dane_kontaktowe))
-    
-print("\n" * 2)
-stworz_profil("Bartosz", wiek=22, miejscowosc_zamieszkania="Krakow", szkola="srednia")
-print("\n" * 2)
-stworz_profil("Milena")
-print("\n" * 2)
-stworz_profil("malwina", ulica_zamieszkania="słoneczna", nr_domu=28)
+def stworz_profil(imie, **dane_dodatkowe):
+    profil = {
+        "imie": imie
+    }
+
+    profil.update(dane_dodatkowe)
+
+    return profil
+
+
+profil1 = stworz_profil(
+    "Bartosz",
+    wiek=22,
+    miasto="Kraków"
+)
+
+profil2 = stworz_profil(
+    "Anna",
+    wiek=30,
+    miasto="Warszawa",
+    zawod="Programistka"
+)
+
+profil3 = stworz_profil("Jan")
+
+print(profil1)
+print(profil2)
+print(profil3)
