@@ -1,13 +1,10 @@
-tekst = input("Podaj tekst, pusty też może być: ")
+tekst = input("Podaj dowolny tekst: ")
 
-if tekst:
-    print("string zawiera znaki")
+czy_prawdziwy = bool(tekst)
+
+print("Wartość bool:", czy_prawdziwy)
+
+if czy_prawdziwy:
+    print("Wprowadzony tekst jest prawdziwy (niepusty).")
 else:
-    print("string nie zawiera znaków")
-    
-    #txt = input("Podaj dowolny tekst, pusty też ok")
-    
-    #if bool(txt):
-     #   print("Wprowadzony tekst to: ",txt)
-    #else:
-    #    print("Wprowadzono pusty tekst / interpretacja jako fałsz.")
+    print("Wprowadzony tekst jest fałszywy (pusty).")
