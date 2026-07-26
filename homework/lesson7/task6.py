@@ -1,11 +1,19 @@
+def stworz_licznik():
+    licznik = 0
 
-licznik = int(0)
+    def zwieksz():
+        nonlocal licznik
 
-def stworz_licznik(czynnik):
- def dodaj(licznik):
-     return licznik + czynnik
- return dodaj
+        licznik += 1
 
-zwieksz_o6 = stworz_licznik(6)
+        return licznik
 
-print(zwieksz_o6(6))
+    return zwieksz
+
+
+licznik = stworz_licznik()
+
+print(licznik())
+print(licznik())
+print(licznik())
+print(licznik())

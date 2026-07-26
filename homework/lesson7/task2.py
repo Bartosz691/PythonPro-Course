@@ -1,4 +1,14 @@
-oceny = {"Jan": 4, "Anna": 5, "Piotr": 3, "Kasia": 4}
+oceny = {
+    "Jan": 4,
+    "Anna": 5,
+    "Piotr": 3,
+    "Kasia": 4
+}
 
-posortowane_po_ocenie = sorted(oceny, key=lambda oceny: oceny[1])
-print(posortowane_po_ocenie)
+posortowane_oceny = sorted(
+    oceny.items(),
+    key=lambda element: element[1],
+    reverse=True
+)
+
+print(posortowane_oceny)
