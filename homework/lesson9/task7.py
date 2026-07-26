@@ -1,12 +1,15 @@
 from pathlib import Path
 
-# Tworzenie ścieżki
-sciezka_do_pliku = Path("Projekt") /"src" /"data" /"docs"
-# Tworzenie folderów, jeśli nie istnieją
-sciezka_do_pliku.parent.mkdir(parents=True, exist_ok=True)
+projekt = Path("Projekt")
 
-# Zapis do pliku
-with open(sciezka_do_pliku, "w") as f:
-  f.write("To jest raport.")
-  
-print(f"Plik istnieje: {sciezka_do_pliku.exists()}")
+src = projekt / "src"
+data = projekt / "data"
+docs = projekt / "docs"
+
+src.mkdir(parents=True, exist_ok=True)
+data.mkdir(parents=True, exist_ok=True)
+docs.mkdir(parents=True, exist_ok=True)
+
+print(f"Folder src istnieje: {src.exists()}")
+print(f"Folder data istnieje: {data.exists()}")
+print(f"Folder docs istnieje: {docs.exists()}")

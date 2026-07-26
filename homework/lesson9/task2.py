@@ -1,14 +1,13 @@
 from pathlib import Path
-plik = input("podaj nazwę pliku: ")
+
+plik = input("Podaj nazwę pliku: ")
 
 try:
- with open(plik+".txt", "r", encoding="utf-8") as f:
- # 1. Odczyt całego pliku na raz (dla małych plików)
-    caly_tekst = f.read()
-    ilosc_slow = len(caly_tekst.split())
-    
+    with open(plik + ".txt", "r", encoding="utf-8") as f:
+        caly_tekst = f.read()
+        ilosc_slow = len(caly_tekst.split())
+
+        print(f"Ilość słów w pliku: {ilosc_slow}")
+
 except FileNotFoundError:
- print("Plik nie istnieje")
-
-
-print(f"ilość słów w pliku: {ilosc_slow}")
+    print("Plik nie istnieje")
