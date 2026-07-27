@@ -1,0 +1,25 @@
+Zdefiniowanie pola rok jako tylko do odczytu:
+
+from django.contrib import admin
+from .models import Car
+
+
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    list_display = (
+        "brand",
+        "model",
+        "year",
+        "is_available",
+        "full_name",
+    )
+
+    search_fields = ("brand", "model")
+    list_filter = ("is_available", "year")
+    ordering = ("-year",)
+    readonly_fields = ("year",)
+
+    def full_name(self, obj):
+        return f"{obj.brand} {obj.model}"
+
+    full_name.short_description = "Pełna nazwa"

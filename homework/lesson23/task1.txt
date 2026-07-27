@@ -1,0 +1,59 @@
+1. utworzenie i aktywacja środowiska:
+
+PS D:\PythonPro-Course\homework\lesson23> python -m venv .venv
+PS D:\PythonPro-Course\homework\lesson23> .\.venv\Scripts\Activate.ps1
+(.venv) PS D:\PythonPro-Course\homework\lesson23> 
+
+2. instalacja Django i Pillow:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson23> pip install django pillow
+Collecting django
+  Using cached django-6.0.7-py3-none-any.whl.metadata (3.9 kB)
+Collecting pillow
+  Downloading pillow-12.3.0-cp314-cp314-win_amd64.whl.metadata (9.3 kB)
+Collecting asgiref>=3.9.1 (from django)
+  Downloading asgiref-3.12.1-py3-none-any.whl.metadata (9.4 kB)
+Collecting sqlparse>=0.5.0 (from django)
+  Using cached sqlparse-0.5.5-py3-none-any.whl.metadata (4.7 kB)
+Collecting tzdata (from django)
+  Using cached tzdata-2026.3-py2.py3-none-any.whl.metadata (1.4 kB)
+Using cached django-6.0.7-py3-none-any.whl (8.4 MB)
+Downloading pillow-12.3.0-cp314-cp314-win_amd64.whl (7.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.2/7.2 MB 26.3 MB/s  0:00:00
+Downloading asgiref-3.12.1-py3-none-any.whl (25 kB)
+Using cached sqlparse-0.5.5-py3-none-any.whl (46 kB)
+Using cached tzdata-2026.3-py2.py3-none-any.whl (348 kB)
+Installing collected packages: tzdata, sqlparse, pillow, asgiref, django
+Successfully installed asgiref-3.12.1 django-6.0.7 pillow-12.3.0 sqlparse-0.5.5 tzdata-2026.3
+
+[notice] A new release of pip is available: 25.3 -> 26.1.2
+[notice] To update, run: python.exe -m pip install --upgrade pip
+
+
+3. utworzenie projektu:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson23> django-admin startproject config .
+
+4. utworzenie aplikacji cars:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson23> python manage.py startapp cars
+
+5. dodanie cars do settings.py:
+
+
+# Application definition
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'cars',
+]
+
+dodanie konfiguracji zdjęć na końcu pliku settings.py:
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

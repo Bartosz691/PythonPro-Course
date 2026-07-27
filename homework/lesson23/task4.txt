@@ -1,0 +1,13 @@
+Dodanie filtrowania po dostępności samochodu i roku produkcji samochodu:
+
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    list_display = (
+        "brand",
+        "model",
+        "year",
+        "is_available",
+    )
+
+    search_fields = ("brand", "model")
+    list_filter = ("is_available", "year")

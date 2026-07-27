@@ -1,0 +1,192 @@
+1. Dodanie klasy Dealer i pola dealer w klasie Car:
+
+from django.db import models
+
+
+class Dealer(models.Model):
+    name = models.CharField(max_length=200)
+    address = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+
+class Car(models.Model):
+    brand = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+    year = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField()
+    photo = models.ImageField(upload_to="cars/")
+    owner_website = models.URLField(blank=True)
+    is_available = models.BooleanField(default=True)
+
+    dealer = models.ForeignKey(
+        Dealer,
+        on_delete=models.CASCADE,
+        related_name="cars",
+        null=True,
+        blank=True,
+    )
+
+    def __str__(self):
+        return f"{self.brand} {self.model}"
+
+plik cars/admin.py:
+
+from django.contrib import admin
+from django.utils.html import format_html
+
+from .models import Car, Dealer
+
+
+class CarInline(admin.TabularInline):
+    model = Car
+    extra = 0
+
+
+@admin.register(Dealer)
+class DealerAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "address",
+    )
+
+    inlines = (
+        CarInline,
+    )
+
+
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    list_display = (
+        "brand",
+        "model",
+        "year",
+        "is_available",
+        "full_name",
+        "photo_thumbnail",
+    )
+
+    search_fields = (
+        "brand",
+        "model",
+    )
+
+    list_filter = (
+        "is_available",
+        "year",
+    )
+
+    ordering = (
+        "-year",
+    )
+
+    readonly_fields = (
+        "year",
+    )
+
+    actions = (
+        "mark_as_unavailable",
+    )
+
+    def full_name(self, obj):
+        return f"{obj.brand} {obj.model}"
+
+    full_name.short_description = "Pełna nazwa"
+
+    def mark_as_unavailable(self, request, queryset):
+        updated = queryset.update(is_available=False)
+
+        self.message_user(
+            request,
+            f"Oznaczono jako niedostępne: {updated} samochodów."
+        )
+
+    mark_as_unavailable.short_description = "Oznacz jako niedostępne"
+
+    def photo_thumbnail(self, obj):
+        if obj.photo:
+            return format_html(
+                '<img src="{}" width="150" />',
+                obj.photo.url
+            )
+
+        return "Brak zdjęcia"
+
+    photo_thumbnail.short_description = "Zdjęcie"
+
+2. Wykonanie migracji:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson23> python manage.py makemigrations
+Migrations for 'cars':
+  cars\migrations\0001_initial.py
+    + Create model Dealer
+    + Create model Car
+(.venv) PS D:\PythonPro-Course\homework\lesson23> python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, cars, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying cars.0001_initial... OK
+  Applying sessions.0001_initial... OK
+
+3. Dodanie obsługi plików zdjęć dodanych przez użytkownika w config/urls.py:
+
+from django.contrib import admin
+from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
+
+4. wykonanie sprawdzenia i uruchomienie serwera:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson23> python manage.py check
+System check identified no issues (0 silenced).
+
+System check identified no issues (0 silenced).
+July 28, 2026 - 00:27:31
+Django version 6.0.7, using settings 'config.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
+For more information on production servers see: https://docs.djangoproject.com/en/6.0/howto/deployment/
+
+5. dodanie do testu panela administratora superuser:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson23> python manage.py createsuperuser
+Username (leave blank to use 'theha'): admin
+Email address: admin@admin.pl
+Password: 
+Password (again): 
+This password is too common.
+This password is entirely numeric.
+Bypass password validation and create user anyway? [y/N]: y
+Superuser created successfully.

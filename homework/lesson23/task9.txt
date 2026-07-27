@@ -1,0 +1,48 @@
+Dodanie ładowania miniaturki zdjęcia w cars/admin.py:
+
+from django.contrib import admin
+from .models import Car
+from django.utils.html import format_html
+
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    list_display = (
+        "brand",
+        "model",
+        "year",
+        "is_available",
+        "full_name",
+        "photo_thumbnail",
+    )
+
+    search_fields = ("brand", "model")
+    list_filter = ("is_available", "year")
+    ordering = ("-year",)
+    readonly_fields = ("year",)
+    actions = ("mark_as_unavailable",)
+
+    def full_name(self, obj):
+        return f"{obj.brand} {obj.model}"
+
+    full_name.short_description = "Pełna nazwa"
+    
+    def mark_as_unavailable(self, request, queryset):
+       updated = queryset.update(is_available=False)
+
+       self.message_user(
+        request,
+        f"Oznaczono jako niedostępne: {updated} samochodów."
+    )
+
+    mark_as_unavailable.short_description = "Oznacz jako niedostępne"
+    
+    def photo_thumbnail(self, obj):
+        if obj.photo:
+            return format_html(
+                '<img src="{}" width="150" />',
+                obj.photo.url
+            )
+
+        return "Brak zdjęcia"
+
+    photo_thumbnail.short_description = "Zdjęcie" 
