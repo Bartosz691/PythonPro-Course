@@ -1,0 +1,22 @@
+1. dodanie DRF i Djoser w config/settings.py w INSTALLED_APS:
+
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    "rest_framework",
+    "djoser",
+    "api",
+]
+
+2. dodanie na końcu settings.py ustawienia mówiącemu DRF, że do uwierzytelniania zostanie użyty JWT:
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
