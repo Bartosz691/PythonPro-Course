@@ -1,0 +1,32 @@
+1. dodanie importu w users/views.py:
+
+from django.contrib.auth import login
+
+2. modyfikacja funkcji register:
+
+def register(request):
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
+
+        if form.is_valid():
+            user = form.save()
+
+            login(request, user)
+
+            messages.success(
+                request,
+                "Konto zostało utworzone. Zostałeś automatycznie zalogowany."
+            )
+
+            return redirect("home")
+
+    else:
+        form = CustomUserCreationForm()
+
+    return render(
+        request,
+        "users/register.html",
+        {
+            "form": form
+        }
+    )

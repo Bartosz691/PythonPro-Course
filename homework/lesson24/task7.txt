@@ -1,0 +1,10 @@
+Jeśli niezalogowany użytkownik próbuje wejść na widok
+zabezpieczony @login_required, Django przekierowuje go
+na stronę logowania, dodając parametr next.
+
+Przykład:
+ /login/?next=/profile/
+
+Po poprawnym zalogowaniu LoginView odczytuje parametr
+next i przekierowuje użytkownika z powrotem na stronę,
+którą pierwotnie próbował odwiedzić.

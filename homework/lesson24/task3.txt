@@ -1,0 +1,25 @@
+1. dodanie widoku do strony profili w users/views.py:
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+
+@login_required
+def profile(request):
+    return render(
+        request,
+        "users/profile.html"
+    )
+
+
+2. utworzenie strony profile.html:
+
+{% extends "users/base.html" %}
+
+{% block content %}
+
+<h1>Profil</h1>
+
+<p>Witaj, {{ user.username }}!</p>
+
+{% endblock %}

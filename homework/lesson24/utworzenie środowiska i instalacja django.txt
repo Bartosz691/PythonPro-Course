@@ -1,0 +1,45 @@
+1. utworzenie środowiska i instalacja Django:
+
+PS D:\PythonPro-Course\homework\lesson24> python -m venv .venv                                        
+PS D:\PythonPro-Course\homework\lesson24> .\.venv\Scripts\Activate.ps1
+(.venv) PS D:\PythonPro-Course\homework\lesson24> pip install django
+Collecting django
+  Using cached django-6.0.7-py3-none-any.whl.metadata (3.9 kB)
+Collecting asgiref>=3.9.1 (from django)
+  Using cached asgiref-3.12.1-py3-none-any.whl.metadata (9.4 kB)
+Collecting sqlparse>=0.5.0 (from django)
+  Using cached sqlparse-0.5.5-py3-none-any.whl.metadata (4.7 kB)
+Collecting tzdata (from django)
+  Using cached tzdata-2026.3-py2.py3-none-any.whl.metadata (1.4 kB)
+Using cached django-6.0.7-py3-none-any.whl (8.4 MB)
+Using cached asgiref-3.12.1-py3-none-any.whl (25 kB)
+Using cached sqlparse-0.5.5-py3-none-any.whl (46 kB)
+Using cached tzdata-2026.3-py2.py3-none-any.whl (348 kB)
+Installing collected packages: tzdata, sqlparse, asgiref, django
+Successfully installed asgiref-3.12.1 django-6.0.7 sqlparse-0.5.5 tzdata-2026.3
+
+[notice] A new release of pip is available: 25.3 -> 26.1.2
+[notice] To update, run: python.exe -m pip install --upgrade pip
+
+2. utworzenie projektu:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson24> django-admin startproject config .
+
+3. utworzenie aplikacji:
+(.venv) PS D:\PythonPro-Course\homework\lesson24> python manage.py startapp users
+
+
+4. dodanie aplikacji users w config/settings.py w INSTALLED_APPS:
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'users',
+]
+
+
+

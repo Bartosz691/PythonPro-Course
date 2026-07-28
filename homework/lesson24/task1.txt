@@ -1,0 +1,65 @@
+1. dodanie obsługi logowania w config/settings.py:
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/login/"
+LOGIN_URL = "/login/"
+
+2. utworzenie w katalogu users pliku urls.py z następującym kodem:
+
+from django.contrib.auth import views as auth_views
+from django.urls import path
+
+from . import views
+
+
+urlpatterns = [
+    path("", views.home, name="home"),
+
+    path(
+        "login/",
+        auth_views.LoginView.as_view(
+            template_name="users/login.html"
+        ),
+        name="login",
+    ),
+
+    path(
+        "logout/",
+        auth_views.LogoutView.as_view(),
+        name="logout",
+    ),
+
+    path(
+        "register/",
+        views.register,
+        name="register",
+    ),
+
+    path(
+        "profile/",
+        views.profile,
+        name="profile",
+    ),
+]
+
+3. dodanie ścieżki dostępu do users.urls w config/urls.py:
+
+from django.contrib import admin
+from django.urls import include, path
+
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("", include("users.urls")),
+]
+
+4. utworzenie folderu szablonów w aplikacji users:
+
+users/
+    templates/
+        users/
+            base.html
+            home.html
+            login.html
+            register.html
+            profile.html

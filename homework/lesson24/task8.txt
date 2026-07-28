@@ -1,0 +1,71 @@
+1. dodanie ścieżki do zmiany hasła w users/urls.py:
+
+path(
+    "password-change/",
+    auth_views.PasswordChangeView.as_view(
+        template_name="users/password_change_form.html"
+    ),
+    name="password_change",
+),
+
+path(
+    "password-change/done/",
+    auth_views.PasswordChangeDoneView.as_view(
+        template_name="users/password_change_done.html"
+    ),
+    name="password_change_done",
+),
+
+2. utworzenie szablonu zmiany hasła password_change_form.html:
+
+{% extends "users/base.html" %}
+
+{% block content %}
+
+<h1>Zmiana hasła</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Zmień hasło
+    </button>
+</form>
+
+{% endblock %}
+
+3. utworzenie szablonu potwierdzenia zmiany hasła password_change_done.html:
+
+{% extends "users/base.html" %}
+
+{% block content %}
+
+<h1>Hasło zmienione</h1>
+
+<p>
+    Twoje hasło zostało pomyślnie zmienione.
+</p>
+
+<a href="{% url 'profile' %}">
+    Wróć do profilu
+</a>
+
+{% endblock %}
+
+4. dodanie linku do zmiany hasła w profile.html:
+
+{% extends "users/base.html" %}
+
+{% block content %}
+
+<h1>Profil</h1>
+
+<p>Witaj, {{ user.username }}!</p>
+
+<a href="{% url 'password_change' %}">
+    Zmień hasło
+</a>
+
+{% endblock %}
