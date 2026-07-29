@@ -44,22 +44,23 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+    "django.middleware.security.SecurityMiddleware",
 
-    'SessionMiddleware odpowiada za obsługę sesji użytkownika pomiędzy kolejnymi żądaniami HTTP. '''
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    
-    ''' AuthenticationMiddleware rozpoznaje zalogowanego użytkownika 
-    i udostępnia go w żądaniu jako request.user.'''
-
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # SessionMiddleware odpowiada za obsługę sesji użytkownika
+    # pomiędzy kolejnymi żądaniami HTTP.
     "django.contrib.sessions.middleware.SessionMiddleware",
+
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+
+    # AuthenticationMiddleware rozpoznaje zalogowanego użytkownika
+    # i udostępnia go w żądaniu jako request.user.
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    
+
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
+    "api.middleware.HttpMethodMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'

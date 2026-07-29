@@ -1,0 +1,33 @@
+1. uruchomienie serwera
+
+python manage.py runserver
+
+2. dodanie użytkownika oraz jego hasło i email w postmanie:
+
+{
+    "username": "bartosz",
+    "password": "BardzoTrudneHaslo123!",
+    "email": "bartosz@example.com"
+}
+
+3. po poprawnym utworzeniu powinien się wyświetlić komunikat 201 created
+
+{
+    "email": "bartosz@example.com",
+    "username": "bartosz",
+    "id": 1
+}
+
+4. kontrola dodania użytkownika w panelu administratora na serwerze.
+
+Jeżeli nie ma ustawionego administratora należy go utworzyć i nadać mu hasło poleceniem python manage.py createsuperuser
+
+(.venv) PS D:\PythonPro-Course\homework\lesson26> python manage.py createsuperuser
+Username (leave blank to use 'theha'): admin
+Email address: admin@admin.pl
+Password: 
+Password (again): 
+This password is too common.
+This password is entirely numeric.
+Bypass password validation and create user anyway? [y/N]: y
+Superuser created successfully.

@@ -1,0 +1,30 @@
+1. Tworzenie własnego Middleware
+
+utworzenie pliku: api/middleware.py
+
+class HttpMethodMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        print(f"Otrzymano zapytanie metodą {request.method}")
+
+        response = self.get_response(request)
+
+        return response
+
+
+
+# Middleware przechwytuje każde przychodzące żądanie HTTP przed przekazaniem go
+# do dalszej części aplikacji Django. Pobiera metodę żądania z request.method
+# i wyświetla ją w konsoli, np. GET, POST, PUT lub DELETE.
+
+# Metoda __init__ zapisuje funkcję get_response, która pozwala przekazać żądanie
+# dalej do aplikacji Django.
+
+# Metoda __call__ jest wykonywana dla każdego żądania. Wyświetla w terminalu
+# informację o użytej metodzie HTTP, następnie przekazuje żądanie dalej i zwraca
+# otrzymaną odpowiedź.
+
+# Aby middleware działało, należy dodać do listy MIDDLEWARE w settings.py:
+# "api.middleware.HttpMethodMiddleware",
