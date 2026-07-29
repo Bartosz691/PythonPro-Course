@@ -62,3 +62,22 @@ po wpisaniu polecenia pojawi się komunikat 401 Unauthorized
 {
     "detail": "Authentication credentials were not provided."
 }
+
+
+5. test z tokenem:
+
+W przypadku gdyby token wygasł należy ponownie się zalagować i skopiować nowy token access:
+
+POST http://127.0.0.1:8000/auth/jwt/create/
+
+wpisano w postmanie GET http://127.0.0.1:8000/api/protected/
+
+W zakładce Authorization wybrano w Auth Type: Bearer Token
+
+W polu Token wpisano uzyskany Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg1MzY1NzY5LCJpYXQiOjE3ODUzNjU0NjksImp0aSI6ImQ3NzJkZDI2YTk3YTQ2OTA5MTc0MDQ2OWE4MmRlMDg5IiwidXNlcl9pZCI6IjEifQ.gpRZPaDctKHRCYztWQKP744-27t8AxzF00hhuD9iaeE
+
+
+Komunikat 200 Ok oznacza poprawną autoryzację.
+
+Otrzymano zapytanie metodą GET
+[30/Jul/2026 00:52:14] "GET /api/protected/ HTTP/1.1" 200 22

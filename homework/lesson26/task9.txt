@@ -1,0 +1,40 @@
+1.dodanie konfiguracji w config/settings.py:
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=10),
+}
+
+2. ponowne zalogowanie się w celu otrzymania nowego access tokena:
+
+POST http://127.0.0.1:8000/auth/jwt/create/
+
+wpisano w postmanie GET http://127.0.0.1:8000/api/protected/
+
+W zakładce Authorization wybrano w Auth Type: Bearer Token
+
+W polu Token wpisano uzyskany Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg1MzY2NTYxLCJpYXQiOjE3ODUzNjY1NTEsImp0aSI6ImIyYjQ0OTc5YTViZjQ4M2M5NGYzODExZDBkMWVmZjYwIiwidXNlcl9pZCI6IjEifQ.JZ9PGe416HNrtug1-6yGFpfe82hmEgwEXhvt_9cxDlo
+
+Nowy access jest dostępny tylko przez 10 sekund
+
+3. zalogowanie się z nowym dostępem:
+
+ GET http://127.0.0.1:8000/api/protected/
+
+
+W zakładce Authorization wybrano w Auth Type: Bearer Token i wpisano aktualny access.
+
+Po wygaśnięciu aktualnego accessu pojawia się komunikat 401 Unauthorized Token is Expired a w JSON nasępujący komunikat:
+
+{
+    "detail": "Given token not valid for any token type",
+    "code": "token_not_valid",
+    "messages": [
+        {
+            "token_class": "AccessToken",
+            "token_type": "access",
+            "message": "Token is expired"
+        }
+    ]
+}

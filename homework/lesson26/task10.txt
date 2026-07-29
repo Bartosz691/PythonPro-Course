@@ -1,0 +1,44 @@
+1. nowe żądanie POST:
+
+POST http://127.0.0.1:8000/auth/jwt/refresh/
+
+w Authorization ustawienie No Auth
+
+W zakładce Body ustawienie raw  -> JSON
+
+2. W JSON wpisanie tokenu refresh pozyskanego za pomocą żądania POST http://127.0.0.1:8000/auth/jwt/create/:
+
+
+{
+"refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NTQ1NTA1MSwiaWF0IjoxNzg1MzY4NjUxLCJqdGkiOiI3YmJhNzQ2ZTk3MGE0OWQ3YTdmMDc3MWE4MWU0MWZlMiIsInVzZXJfaWQiOiIxIn0.stKSIh7P57jvbN1ArZrqv35MBqA0Qws7JAYK3UYzg0U"
+
+}
+
+następnie wykonanie żądania w postmanie:
+
+POST http://127.0.0.1:8000/auth/jwt/refresh/
+
+i otrzymanie nowego tokenu:
+
+{
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg1MzY5MTk2LCJpYXQiOjE3ODUzNjg4OTYsImp0aSI6Ijg1YmUxMTJjZjQyNjQ2MmZiYzlhNDg0YzI5NDZhODU0IiwidXNlcl9pZCI6IjEifQ.DJMJF8BtFJuR5n-I8cZeRUsib3Y99QuYbD7vdP7e8dA"
+}
+
+3. uzyskanie dostępu za pomocą nowo uzyskanego tokenu:
+
+Ustawienie w Authorization - Bearer Token
+
+i wpisanie nowego tokenu następnie wpisanie żądania GET http://127.0.0.1:8000/api/protected/ i kliknięcie Send.
+
+Po przyznaniu autoryzacji otrzymano komunikat 200 OK i nazwę użytkownika:
+
+{
+    "username": "bartosz"
+}
+
+a w terminalu:
+
+[30/Jul/2026 01:48:16] "POST /auth/jwt/refresh/ HTTP/1.1" 200 244
+Otrzymano zapytanie metodą GET
+[30/Jul/2026 01:51:36] "GET /api/protected/ HTTP/1.1" 200 22
+
