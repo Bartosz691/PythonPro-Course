@@ -1,0 +1,64 @@
+1. wpisanie następującego kodu do api/views.py:
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+class ProtectedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({
+            "username": request.user.username
+        })
+
+Najważniejszy fragment w class ProtectedView:
+
+permission_classes = [IsAuthenticated] -> blokuje on dostęp anonimowym użytkownikom
+
+2. utworzenie pliku api/urls.py:
+
+from django.urls import path
+
+from .views import ProtectedView
+
+
+urlpatterns = [
+    path(
+        "protected/",
+        ProtectedView.as_view(),
+        name="protected"
+    ),
+]
+
+podpięcie dostępu w config/urls.py:
+
+),
+      path(
+        "api/",
+        include("api.urls")
+    ),
+]
+
+
+3. w config/settings.py na końcu pliku powinien znajdować się fragment REST_FRAMEWORK:
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+4. test bez tokena:
+
+uruchomienie serwera python manage.py runserver
+
+i w postmanie wpisanie polecenia GET http://127.0.0.1:8000/api/protected/
+ w zakładce Authorization należy ustawić opcję No Auth
+
+po wpisaniu polecenia pojawi się komunikat 401 Unauthorized
+
+{
+    "detail": "Authentication credentials were not provided."
+}

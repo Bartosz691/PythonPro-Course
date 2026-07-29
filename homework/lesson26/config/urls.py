@@ -30,4 +30,8 @@ urlpatterns = [
         "auth/",
         include("djoser.urls.jwt"),
     ),
+      path(
+        "api/",
+        include("api.urls")
+    ),
 ]
