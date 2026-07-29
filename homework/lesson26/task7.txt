@@ -28,3 +28,14 @@ class HttpMethodMiddleware:
 
 # Aby middleware działało, należy dodać do listy MIDDLEWARE w settings.py:
 # "api.middleware.HttpMethodMiddleware",
+
+2. uruchomienie serwera i test middleware:
+
+python manage.py runserver
+
+i sprawdzenie zapytania metodą get:
+
+GET http://127.0.0.1:8000/admin/
+
+Otrzymano zapytanie metodą GET
+[29/Jul/2026 19:19:03] "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4080

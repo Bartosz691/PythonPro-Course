@@ -1,0 +1,38 @@
+1. logowanie na utworzone hasło w postman:
+
+metoda  -> POST
+
+2. w ustawieniach Body  -> Raw zaznaczono JSON
+
+i podane dane do logowania użytkownika:
+
+{
+    "username": "bartosz",
+    "password": "BardzoTrudneHaslo123!"
+}
+
+3. po wykonaniu pojawia się komunikat 200 OK oraz tokeny refresh i access:
+
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NTQzMDU4OCwiaWF0IjoxNzg1MzQ0MTg4LCJqdGkiOiIxYzVhNGI0MDNjZDY0MGQ3ODQ2NzJhYTU1OWNiZGQwOSIsInVzZXJfaWQiOiIxIn0.w_3XIPL98g63YWOeLekfkNvnXGEC_xC6owvfxQK6dB8",
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg1MzQ0NDg4LCJpYXQiOjE3ODUzNDQxODgsImp0aSI6IjIwYjM4YmNmZjU2ZTQ0MjNhMmIzZmVmMjE1YzNlNzE3IiwidXNlcl9pZCI6IjEifQ.ojEIisnq2JomjDpoO2Kstvt7FrYmMCrm0joodmwmUcc"
+}
+
+4. wklejenie tokenu access na stronie jwt.io do Payload:
+
+Po zalogowaniu przez endpoint /auth/jwt/create/ otrzymałem token access.
+Po wklejeniu tokenu do jwt.io w sekcji Payload znajduje się user_id = 1.
+
+Pole iat określa czas utworzenia tokenu, a exp czas jego wygaśnięcia.
+Różnica pomiędzy exp i iat wynosi 300 sekund, więc token access
+jest ważny przez 5 minut.
+
+
+{
+  "token_type": "access",
+  "exp": 1785344488,
+  "iat": 1785344188,
+  "jti": "20b38bcff56e4423a2b3fef215c3e717",
+  "user_id": "1"
+}
+
