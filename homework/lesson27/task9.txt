@@ -80,3 +80,15 @@ JSON zwraca:
     "name": "IBM PC",
     "price": "6200.00"
 }
+
+
+[30/Jul/2026 18:33:08] "GET /api/products/%0A/ HTTP/1.1" 404 23
+[30/Jul/2026 18:33:39] "GET /api/products/ HTTP/1.1" 200 53
+[30/Jul/2026 18:37:23] "PUT /api/products/2/ HTTP/1.1" 200 42
+Not Found: /api/products/2/\n
+[30/Jul/2026 18:47:47] "GET /api/products/2/%0A HTTP/1.1" 404 19394
+[30/Jul/2026 18:47:58] "GET /api/products/2/ HTTP/1.1" 200 42
+[30/Jul/2026 18:49:58] "PATCH /api/products/2/ HTTP/1.1" 200 42
+[30/Jul/2026 18:50:41] "GET /api/products/2/ HTTP/1.1" 200 42
+[30/Jul/2026 18:50:50] "GET /api/products/2/ HTTP/1.1" 200 42
+
