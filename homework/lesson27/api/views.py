@@ -63,3 +63,10 @@ class ProductViewSet(ModelViewSet):
         cache.clear()
 
         return product
+
+    def perform_update(self, serializer):
+        product = serializer.save()
+
+        cache.clear()
+
+        return product

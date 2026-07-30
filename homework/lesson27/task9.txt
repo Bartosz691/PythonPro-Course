@@ -1,2 +1,82 @@
-1. dodanie w ProductViewSet:
+1. w api/views.py rozszerzono klasę class ProductViewSet(ModelViewSet) o metodę perform_update():
 
+@method_decorator(cache_page(600), name="list")
+@method_decorator(cache_page(60), name="retrieve")
+class ProductViewSet(ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def perform_update(self, serializer):
+        product = serializer.save()
+
+        cache.clear()
+
+        return product
+
+2. dodanie nowego produktu w celu przetestowania działania aplikacji:
+
+POST http://127.0.0.1:8000/api/products/
+
+Body  -> raw -> JSON:
+
+{
+     "name": "Komputer IBM PC",
+    "price": 5500.00
+}
+
+3. zaktualizowanie nowo dodanego produktu:
+
+PUT http://127.0.0.1:8000/api/products/2/
+
+w BODY:
+
+{
+     "name": "IBM PC",
+    "price": 5500.00
+}
+
+odpowiedź JSON:
+
+
+{
+    "id": 2,
+    "name": "IBM PC",
+    "price": "5500.00"
+}
+
+4. wykonanie sprawdzenia GET http://127.0.0.1:8000/api/products/2/
+
+JSON zwraca:
+
+{
+    "id": 2,
+    "name": "IBM PC",
+    "price": "5500.00"
+}
+
+5. wykonanie żądania PATCH http://127.0.0.1:8000/api/products/2/
+
+i zmiana ceny w BODY:
+
+{
+    "price": 6200.00
+}
+
+JSON zwraca:
+
+{
+    "id": 2,
+    "name": "IBM PC",
+    "price": "6200.00"
+}
+
+6. sprawdzenie żądaniem GET  http://127.0.0.1:8000/api/products/2/
+
+
+JSON zwraca:
+
+{
+    "id": 2,
+    "name": "IBM PC",
+    "price": "6200.00"
+}
