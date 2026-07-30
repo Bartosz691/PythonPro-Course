@@ -1,0 +1,130 @@
+1. dodanie w ap/views.py funkcji selective_cache_view:
+
+def selective_cache_view(request):
+    szybkie_dane = {
+        "liczba_uzytkownikow": 10
+    }
+
+    wynik_obliczen = cache.get("complex_calculation")
+
+    if wynik_obliczen is None:
+        time.sleep(3)
+
+        wynik_obliczen = {
+            "wynik": 123456,
+            "z_cache": False,
+        }
+
+        cache.set("complex_calculation", wynik_obliczen, 60)
+    else:
+        wynik_obliczen["z_cache"] = True
+
+    return JsonResponse(
+        {
+            "szybkie_dane": szybkie_dane,
+            "skomplikowane_obliczenia": wynik_obliczen,
+        }
+        
+        def selective_cache_view(request):
+    szybkie_dane = {
+        "liczba_uzytkownikow": 10
+    }
+
+    wynik_obliczen = cache.get("complex_calculation")
+
+    if wynik_obliczen is None:
+        time.sleep(3)
+
+        wynik_obliczen = {
+            "wynik": 123456,
+            "z_cache": False,
+        }
+
+        cache.set(
+            "complex_calculation",
+            wynik_obliczen,
+            60,
+        )
+    else:
+        wynik_obliczen["z_cache"] = True
+
+    return JsonResponse(
+        {
+            "szybkie_dane": szybkie_dane,
+            "skomplikowane_obliczenia": wynik_obliczen,
+        }
+    )
+
+import time
+
+from django.core.cache import cache
+from django.http import JsonResponse
+from django.views.decorators.cache import cache_page
+
+
+@cache_page(60)
+def cached_view(request):
+    return JsonResponse(
+        {
+            "message": "Odpowiedź została wygenerowana.",
+            "timestamp": time.time(),
+        }
+    )
+
+
+def selective_cache_view(request):
+    szybkie_dane = {
+        "liczba_uzytkownikow": 10
+    }
+
+    wynik_obliczen = cache.get("complex_calculation")
+
+    if wynik_obliczen is None:
+        time.sleep(3)
+
+        wynik_obliczen = {
+            "wynik": 123456,
+            "z_cache": False,
+        }
+
+        cache.set(
+            "complex_calculation",
+            wynik_obliczen,
+            60,
+        )
+    else:
+        wynik_obliczen["z_cache"] = True
+
+    return JsonResponse(
+        {
+            "szybkie_dane": szybkie_dane,
+            "skomplikowane_obliczenia": wynik_obliczen,
+        }
+    )
+
+
+2. wykonanie sprawdzenia:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py check
+System check identified no issues (0 silenced).
+
+
+
+3. ponowne uruchomienie serwera:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py runserver
+
+4. sprawdzenie http://127.0.0.1:8000/api/selective/ 
+
+{"szybkie_dane": {"liczba_uzytkownikow": 10}, "skomplikowane_obliczenia": {"wynik": 123456, "z_cache": false}}
+
+za pierwszym razem strona ładuje się 3 sekundy potem szybciej.  
+
+Po ponownym załadowaniu:
+
+{"szybkie_dane": {"liczba_uzytkownikow": 10}, "skomplikowane_obliczenia": {"wynik": 123456, "z_cache": true}}
+
+
+
+
+

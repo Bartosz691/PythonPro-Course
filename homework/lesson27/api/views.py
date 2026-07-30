@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 import time
 
 from django.core.cache import cache
@@ -32,7 +30,11 @@ def selective_cache_view(request):
             "z_cache": False,
         }
 
-        cache.set("complex_calculation", wynik_obliczen, 60)
+        cache.set(
+            "complex_calculation",
+            wynik_obliczen,
+            60,
+        )
     else:
         wynik_obliczen["z_cache"] = True
 
