@@ -1,0 +1,7 @@
+wyczyszczenie cache:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py shell -c "from django.core.cache import cache; cache.clear(); print('Cache wyczyszczony')"
+12 objects imported automatically (use -v 2 for details).
+
+Cache wyczyszczony
+(.venv) PS D:\PythonPro-Course\homework\lesson27> 
