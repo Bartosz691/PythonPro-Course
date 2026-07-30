@@ -1,0 +1,93 @@
+1. dodanie w api/models.py:
+
+from django.db import models
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+    )
+
+    def __str__(self):
+        return self.name
+
+
+
+2. wykonanie migracji:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py makemigrations
+Migrations for 'api':      
+  api\migrations\0001_initial.py
+    + Create model Product
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py migrate       
+Operations to perform:
+  Apply all migrations: admin, api, auth, contenttypes, sessions
+Running migrations:
+  Applying api.0001_initial... OK
+
+
+3. utworzenie w api/serializers.py:
+
+from rest_framework import serializers
+
+from .models import Product
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = "__all__"
+
+
+3. modyfikacja api/veiws.py:
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from rest_framework.viewsets import ModelViewSet
+
+from .models import Product
+from .serializers import ProductSerializer
+
+
+@method_decorator(
+    cache_page(600),
+    name="list",
+)
+@method_decorator(
+    cache_page(60),
+    name="retrieve",
+)
+class ProductViewSet(ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+4. modyfikacja punktów dostępu w api/urls.py:
+
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+
+from . import views
+from .views import ProductViewSet
+
+
+router = DefaultRouter()
+
+router.register(
+    "products",
+    ProductViewSet,
+    basename="product",
+)
+
+
+urlpatterns = [
+    path("cached/", views.cached_view),
+    path("selective/", views.selective_cache_view),
+    path("", include(router.urls)),
+]
+
+5. sprawdzenie endpointów:
+

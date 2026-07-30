@@ -2,7 +2,12 @@ import time
 
 from django.core.cache import cache
 from django.http import JsonResponse
+from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from rest_framework.viewsets import ModelViewSet
+
+from .models import Product
+from .serializers import ProductSerializer
 
 
 @cache_page(60)
@@ -44,3 +49,17 @@ def selective_cache_view(request):
             "skomplikowane_obliczenia": wynik_obliczen,
         }
     )
+
+
+@method_decorator(cache_page(600), name="list")
+@method_decorator(cache_page(60), name="retrieve")
+class ProductViewSet(ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def perform_update(self, serializer):
+        product = serializer.save()
+
+        cache.clear()
+
+        return product
