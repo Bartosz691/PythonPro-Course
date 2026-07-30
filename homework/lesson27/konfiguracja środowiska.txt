@@ -1,0 +1,187 @@
+PS D:\PythonPro-Course\homework\lesson27> .\.venv\Scripts\Activate.ps1
+(.venv) PS D:\PythonPro-Course\homework\lesson27> pip install django djangorestframework django-debug-toolbar
+Collecting django
+  Using cached django-6.0.7-py3-none-any.whl.metadata (3.9 kB)
+Collecting djangorestframework
+  Using cached djangorestframework-3.17.1-py3-none-any.whl.metadata (7.9 kB)
+Collecting django-debug-toolbar
+  Downloading django_debug_toolbar-7.0.0-py3-none-any.whl.metadata (4.4 kB)
+Collecting asgiref>=3.9.1 (from django)
+  Using cached asgiref-3.12.1-py3-none-any.whl.metadata (9.4 kB)
+Collecting sqlparse>=0.5.0 (from django)
+  Using cached sqlparse-0.5.5-py3-none-any.whl.metadata (4.7 kB)
+Collecting tzdata (from django)
+  Using cached tzdata-2026.3-py2.py3-none-any.whl.metadata (1.4 kB)
+Using cached django-6.0.7-py3-none-any.whl (8.4 MB)
+Using cached djangorestframework-3.17.1-py3-none-any.whl (898 kB)
+Downloading django_debug_toolbar-7.0.0-py3-none-any.whl (302 kB)
+Using cached asgiref-3.12.1-py3-none-any.whl (25 kB)
+Using cached sqlparse-0.5.5-py3-none-any.whl (46 kB)
+Using cached tzdata-2026.3-py2.py3-none-any.whl (348 kB)
+Installing collected packages: tzdata, sqlparse, asgiref, django, djangorestframework, django-debug-toolbar
+Successfully installed asgiref-3.12.1 django-6.0.7 django-debug-toolbar-7.0.0 djangorestframework-3.17.1 sqlparse-0.5.5 tzdata-2026.3
+(.venv) PS D:\PythonPro-Course\homework\lesson27> pip freeze > requirements.txt
+(.venv) PS D:\PythonPro-Course\homework\lesson27> django-admin startproject config .
+>> python manage.py startapp api
+
+
+(.venv) PS D:\PythonPro-Course\homework\lesson27> pip install django-redis
+Collecting django-redis
+  Downloading django_redis-7.0.0-py3-none-any.whl.metadata (32 kB)
+Requirement already satisfied: Django<7.0,>=5.2 in .\.venv\Lib\site-packages (from django-redis) (6.0.7)
+Collecting redis>=4.0.2 (from django-redis)
+  Downloading redis-8.1.0-py3-none-any.whl.metadata (16 kB)
+Requirement already satisfied: asgiref>=3.9.1 in .\.venv\Lib\site-packages (from Django<7.0,>=5.2->django-redis) (3.12.1)
+Requirement already satisfied: sqlparse>=0.5.0 in .\.venv\Lib\site-packages (from Django<7.0,>=5.2->django-redis) (0.5.5)
+Requirement already satisfied: tzdata in .\.venv\Lib\site-packages (from Django<7.0,>=5.2->django-redis) (2026.3)
+Downloading django_redis-7.0.0-py3-none-any.whl (38 kB)
+Downloading redis-8.1.0-py3-none-any.whl (560 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 560.6/560.6 kB 4.8 MB/s  0:00:00
+Installing collected packages: redis, django-redis
+Successfully installed django-redis-7.0.0 redis-8.1.0
+(.venv) PS D:\PythonPro-Course\homework\lesson27> pip freeze > requirements.txt     
+(.venv) PS D:\PythonPro-Course\homework\lesson27> 
+
+dodanie aplikacji w INSTALLED_APPS:
+
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    "rest_framework",
+    "debug_toolbar",
+    "api",
+
+
+dodanie w MIDDLEWARE "debug_toolbar.middleware.DebugToolbarMiddleware":
+
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+dodanie na końcu pliku INTERNAL_IPS:
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+dodanie ścieżek dostępu w config/urls.py:
+
+
+from django.contrib import admin
+from django.urls import include, path
+
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("__debug__/", include("debug_toolbar.urls")),
+    path("api/", include("api.urls")),
+]
+
+
+utworzenie w api pliku urls.py:
+
+from django.urls import path
+
+from . import views
+
+
+urlpatterns = [
+    path("cached/", views.cached_view, name="cached_view"),
+    path(
+        "selective/",
+        views.selective_cache_view,
+        name="selective_cache",
+    ),
+]
+
+dodanie w api/views.py:
+
+
+from django.shortcuts import render
+
+import time
+
+from django.core.cache import cache
+from django.http import JsonResponse
+from django.views.decorators.cache import cache_page
+
+
+@cache_page(60)
+def cached_view(request):
+    return JsonResponse(
+        {
+            "message": "Odpowiedź została wygenerowana.",
+            "timestamp": time.time(),
+        }
+    )
+
+
+def selective_cache_view(request):
+    szybkie_dane = {
+        "liczba_uzytkownikow": 10
+    }
+
+    wynik_obliczen = cache.get("complex_calculation")
+
+    if wynik_obliczen is None:
+        time.sleep(3)
+
+        wynik_obliczen = {
+            "wynik": 123456,
+            "z_cache": False,
+        }
+
+        cache.set("complex_calculation", wynik_obliczen, 60)
+    else:
+        wynik_obliczen["z_cache"] = True
+
+    return JsonResponse(
+        {
+            "szybkie_dane": szybkie_dane,
+            "skomplikowane_obliczenia": wynik_obliczen,
+        }
+    )
+
+wykonani migracji i sprawdzenie obiektu:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py migrate       
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying sessions.0001_initial... OK
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py check
+System check identified no issues (0 silenced).
+(.venv) PS D:\PythonPro-Course\homework\lesson27> 
+
+
+

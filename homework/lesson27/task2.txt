@@ -1,0 +1,16 @@
+1. założenie nowego super użytkownika - administratora:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py createsuperuser
+Username (leave blank to use 'theha'): admin
+Email address: admin@admin.pl
+Password: 
+Password (again): 
+This password is too common.
+This password is entirely numeric.
+Bypass password validation and create u
+
+
+2.Sprawdzenie czy Django Debug Toolbar pojawia się na stronie:
+
+http://127.0.0.1:8000/admin/
+

@@ -1,0 +1,28 @@
+1. w api/views.py ustawienie czasu widoku cache na 60 sekund:
+
+import time
+
+from django.core.cache import cache
+from django.http import JsonResponse
+from django.views.decorators.cache import cache_page
+
+
+@cache_page(60)
+def cached_view(request):
+    return JsonResponse(
+        {
+            "message": "Odpowiedź została wygenerowana.",
+            "timestamp": time.time(),
+        }
+    )
+
+2. Sprawdzenie timestamp pod adresem:
+
+http://127.0.0.1:8000/api/cached/
+
+
+{"message": "Odpowied\u017a zosta\u0142a wygenerowana.", "timestamp": 1785417708.676697}
+
+po 60 sekundach:
+
+{"message": "Odpowied\u017a zosta\u0142a wygenerowana.", "timestamp": 1785417771.8754272}
