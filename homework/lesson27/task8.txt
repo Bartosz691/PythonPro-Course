@@ -89,5 +89,72 @@ urlpatterns = [
     path("", include(router.urls)),
 ]
 
-5. sprawdzenie endpointów:
+5. sprawdzenie endpointów pod adresem http://127.0.0.1:8000/api/products/:
+
+polecenie GET http://127.0.0.1:8000/api/products/
+
+JSON zwraca: {}
+
+Dodanie produktu metodą post:
+
+POST http://127.0.0.1:8000/api/products/
+
+W zakładce Body wybrano raw -> JSON
+
+przykładowy produkt:
+
+{
+    "name": "Telefon",
+    "price": 999.99
+}
+
+sprawdzenie czy produkt o id 1 występuje:
+
+GET http://127.0.0.1:8000/api/products/1/
+
+
+{
+    "id": 1,
+    "name": "Telefon",
+    "price": "999.99"
+}
+
+
+sprawdzenie żądania PUT:
+
+
+PUT http://127.0.0.1:8000/api/products/1/
+
+i modyfikacja produktu w Body:
+
+żądanie PATCH:
+
+
+PATCH http://127.0.0.1:8000/api/products/1/
+
+modyfikacja ceny:
+
+{
+    "price": 5500.00
+}
+
+JSON zwraca:
+
+{
+    "id": 1,
+    "name": "Laptop Dell",
+    "price": "5500.00"
+}
+
+Sprawdzenie żądania DELETE:
+
+DELETE http://127.0.0.1:8000/api/products/1/
+
+i sprawdzenie GET po usunięciu
+
+GET http://127.0.0.1:8000/api/products/
+
+JSON zwraca:
+
+[]
 
