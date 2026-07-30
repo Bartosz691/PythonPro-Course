@@ -1,0 +1,25 @@
+cache w shellu:
+
+1. wpisanie w powershellu:
+
+PS D:\> cd PythonPro-Course
+PS D:\PythonPro-Course> cd homework
+PS D:\PythonPro-Course\homework> cd lesson27
+
+PS D:\PythonPro-Course\homework\lesson27> .\.venv\Scripts\Activate.ps1
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py shell
+12 objects imported automatically (use -v 2 for details).
+
+Python 3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from django.core.cache import cache
+>>> cache.set("my_key", "hello world", 30)
+>>> cache.get("my_key")
+'hello world'
+>>>
+
+2. po ponad 30 sekundach zwraca none - brak wartości:
+
+>>> cache.get("my_key")
+>>>
