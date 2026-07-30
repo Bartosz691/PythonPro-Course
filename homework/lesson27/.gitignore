@@ -1,0 +1,39 @@
+# Wirtualne środowisko
+.venv/
+venv/
+env/
+
+# Python - cache i pliki skompilowane
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Pliki systemowe
+.DS_Store
+Thumbs.db
+
+# Logi
+*.log
+
+# Pliki tymczasowe
+*.tmp
+*.temp
+
+# Zmienne środowiskowe / dane poufne
+.env
+.env.*
+
+# Cache testów
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Cache narzędzi
+.mypy_cache/
+.ruff_cache/
