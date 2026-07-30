@@ -37,3 +37,5 @@ htmlcov/
 # Cache narzędzi
 .mypy_cache/
 .ruff_cache/
+
+cache_files/

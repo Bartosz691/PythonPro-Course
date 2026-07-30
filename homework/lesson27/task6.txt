@@ -1,0 +1,20 @@
+1. modyfikacja CACHES W config/settings.py:
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR / "cache_files",
+    }
+}
+
+2. utworzenie folderu mkdir cache_files:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson27> mkdir cache_files
+
+
+    Directory: D:\PythonPro-Course\homework\lesson27
+
+
+Mode                 LastWriteTime         Length Name                                                                   
+----                 -------------         ------ ----                                                                   
+d-----        30.07.2026     15:43                cache_files                                                            
