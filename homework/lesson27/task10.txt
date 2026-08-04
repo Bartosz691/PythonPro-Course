@@ -1,0 +1,215 @@
+Konfiguracja Redis jako backendu cache:
+
+
+
+
+1. Instalacja i uruchomienie Docker Desktop
+
+Na komputerze został zainstalowany Docker Desktop.
+Ponieważ Docker wymagał WSL, zainstalowano Windows Subsystem for Linux:
+
+wsl --install
+
+Po instalacji WSL oraz Ubuntu wykonano ponowne uruchomienie komputera.
+
+2. Sprawdzenie działania Dockera
+
+docker --version
+
+Polecenie potwierdziło poprawną instalację Docker Desktop.
+
+Następnie sprawdzono działające kontenery:
+
+docker ps
+
+Początkowo lista była pusta, ponieważ żaden kontener nie był jeszcze uruchomiony.
+
+3. Pobranie i uruchomienie Redis w kontenerze Docker
+
+docker run --name lesson27-redis -p 6379:6379 -d redis
+
+Polecenie:
+- pobiera obraz Redis, jeśli nie znajduje się jeszcze na komputerze,
+- tworzy kontener o nazwie lesson27-redis,
+- uruchamia Redis w tle,
+- mapuje port 6379 kontenera na port 6379 komputera.
+
+
+PS C:\WINDOWS\system32> docker --version
+Docker version 29.6.2, build dfc4efb
+PS C:\WINDOWS\system32> docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+PS C:\WINDOWS\system32> docker run --name lesson27-redis -p 6379:6379 -d redis
+Unable to find image 'redis:latest' locally
+latest: Pulling from library/redis
+8f9da2014a53: Pull complete
+4f4fb700ef54: Pull complete
+239f6712f038: Pull complete
+808f9d34b05d: Pull complete
+7a3a8d0170a7: Pull complete
+062e450697fa: Pull complete
+87fdd3403791: Pull complete
+f37527dca501: Download complete
+32e04edd155a: Download complete
+Digest: sha256:a7efd4ed5037dcfe1543c0e50b9f06293d3e88827005544bf37f381eea5f01cf
+Status: Downloaded newer image for redis:latest
+379045f572630e1c57108fcd0bfe6002551eca71a38400c8a846259019b2c180
+
+
+4. Sprawdzenie działania kontenera Redis
+
+docker ps
+
+Kontener lesson27-redis był uruchomiony i miał status Up.
+
+5. Sprawdzenie komunikacji z Redis
+
+docker exec -it lesson27-redis redis-cli ping
+
+Otrzymano odpowiedź:
+
+PS C:\WINDOWS\system32> docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+379045f57263   redis     "docker-entrypoint.s…"   5 minutes ago   Up 5 minutes   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp   lesson27-redis
+PS C:\WINDOWS\system32> docker exec -it lesson27-redis redis-cli ping
+PONG
+
+What's next:
+    Try Docker Debug for seamless, persistent debugging tools in any container or image → docker debug lesson27-redis
+    Learn more at https://docs.docker.com/go/debug-cli/
+
+6. Przygotowanie projektu Django do współpracy z Redis
+
+Przejście w PowerShellu do katalogu projektu lesson27:
+
+cd D:\PythonPro-Course\homework\lesson27
+
+Polecenie cd (change directory) zmienia bieżący katalog terminala.
+W tym przypadku przechodzimy do głównego katalogu projektu Django,
+w którym znajduje się plik manage.py oraz środowisko wirtualne .venv.
+
+
+7. Aktywacja środowiska wirtualnego
+
+.\.venv\Scripts\Activate.ps1
+
+Polecenie aktywuje środowisko wirtualne .venv utworzone dla projektu.
+Po jego wykonaniu przed ścieżką w terminalu pojawiło się:
+
+(.venv)
+
+Oznacza to, że polecenia python i pip korzystają teraz z interpreterów
+i bibliotek zainstalowanych lokalnie dla projektu lesson27, a nie
+z globalnego środowiska Python w systemie Windows.
+
+
+8. Instalacja biblioteki django-redis
+
+pip install django-redis
+
+Biblioteka django-redis umożliwia wykorzystanie serwera Redis jako
+backendu mechanizmu cache w aplikacji Django.
+
+Polecenie zwróciło:
+
+Requirement already satisfied: django-redis
+
+Oznacza to, że biblioteka django-redis była już wcześniej zainstalowana
+w środowisku .venv i nie było potrzeby instalowania jej ponownie.
+
+W środowisku dostępne są również wymagane zależności, między innymi:
+
+Django 6.0.7
+django-redis 7.0.0
+redis 8.1.0
+
+Pakiet redis jest biblioteką Pythona umożliwiającą komunikację aplikacji
+z działającym serwerem Redis.
+
+
+
+PS C:\WINDOWS\system32> cd D:\PythonPro-Course\homework\lesson27
+PS D:\PythonPro-Course\homework\lesson27> .\.venv\Scripts\Activate.ps1
+(.venv) PS D:\PythonPro-Course\homework\lesson27> pip install django-redis
+Requirement already satisfied: django-redis in .\.venv\Lib\site-packages (7.0.0)
+Requirement already satisfied: Django<7.0,>=5.2 in .\.venv\Lib\site-packages (from django-redis) (6.0.7)
+Requirement already satisfied: redis>=4.0.2 in .\.venv\Lib\site-packages (from django-redis) (8.1.0)
+Requirement already satisfied: asgiref>=3.9.1 in .\.venv\Lib\site-packages (from Django<7.0,>=5.2->django-redis) (3.12.1)
+Requirement already satisfied: sqlparse>=0.5.0 in .\.venv\Lib\site-packages (from Django<7.0,>=5.2->django-redis) (0.5.5)
+Requirement already satisfied: tzdata in .\.venv\Lib\site-packages (from Django<7.0,>=5.2->django-redis) (2026.3)
+
+9. zmiana w CACHES w config/settings.py a następnie sprawdzenie poprawności za pomocą poleceni python manage.py check
+oraz test zapisu i odczytu w Redis.
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+"BACKEND": "django_redis.cache.RedisCache", #linia ta oznacza, że Django cache ma korzystać z Redis przez django-redis
+
+ "LOCATION": "redis://127.0.0.1:6379/1", 
+
+127.0.0.1 - adres działania Redisa na komputerze
+6379 — domyślny port Redis,
+/1 — baza Redis nr 1.
+
+"CLIENT_CLASS": "django_redis.client.DefaultClient", # ustawia standardowego klienta django-redis
+
+po zapisaniu settings.py uruchomiono python manage.py check
+
+
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py check      
+System check identified no issues (0 silenced).
+
+
+10. Test połączenia Django z Redis:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson27> python manage.py shell
+13 objects imported automatically (use -v 2 for details).
+
+Ctrl click to launch VS Code Native REPL
+Python 3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from django.core.cache import cache
+>>> cache.set("redis_test", "Redis działa poprawnie", 60)
+True
+>>> cache.get("redis_test")
+'Redis działa poprawnie'
+>>> 
+
+ sprawdzenie usunięcia:
+
+>>> cache.delete("redis_test")
+True
+>>> cache.get("redis_test")
+>>> 
+
+
+Uruchomiono powłokę Django:
+
+python manage.py shell
+
+Następnie zaimportowano mechanizm cache:
+
+from django.core.cache import cache
+
+Zapisano dane do cache Redis na 60 sekund:
+
+cache.set("redis_test", "Redis działa poprawnie", 60)
+
+Następnie odczytano zapisaną wartość:
+
+cache.get("redis_test")
+
+Oczekiwany wynik:
+
+'Redis działa poprawnie'
+
