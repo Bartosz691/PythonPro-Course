@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+from celery.schedules import crontab
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -137,3 +139,18 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
 CELERY_TIMEZONE = "Europe/Warsaw"
+
+from datetime import timedelta
+
+
+CELERY_BEAT_SCHEDULE = {
+    "log-timestamp-every-10-seconds": {
+        "task": "api.tasks.log_timestamp",
+        "schedule": timedelta(seconds=10),
+    },
+
+    "count-users-every-day-at-23": {
+        "task": "api.tasks.count_users",
+        "schedule": crontab(hour=23, minute=0),
+    },
+}

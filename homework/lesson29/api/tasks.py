@@ -2,6 +2,8 @@ from datetime import datetime
 
 from celery import shared_task
 
+from django.contrib.auth.models import User
+
 
 @shared_task
 def hello_world():
@@ -23,3 +25,12 @@ def log_timestamp():
         file.write(f"{now}\n")
 
     print(f"Zapisano czas: {now}")
+    
+    from django.contrib.auth.models import User
+
+
+@shared_task
+def count_users():
+    count = User.objects.count()
+    print(f"Liczba użytkowników w bazie: {count}")
+    return count
