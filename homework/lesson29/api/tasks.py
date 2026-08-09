@@ -4,7 +4,7 @@ from celery import shared_task
 from django.utils import timezone
 
 from django.contrib.auth.models import User
-
+import time
 
 @shared_task
 def hello_world():
@@ -48,3 +48,10 @@ def update_user_last_login(user_id):
     )
 
     return user_id
+
+@shared_task
+def process_video():
+    print("Rozpoczęto przetwarzanie wideo...")
+    time.sleep(15)
+    print("Przetwarzanie wideo zakończone.")
+    return "done"
