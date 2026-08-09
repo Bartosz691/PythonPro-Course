@@ -1,0 +1,197 @@
+Konfiguracja środowiska:
+
+1. utworzenie środowiska:
+PS D:\PythonPro-Course\homework\lesson29> python -m venv .venv
+
+2. aktywacja środowiska:
+PS D:\PythonPro-Course\homework\lesson29> .\.venv\Scripts\Activate.ps1
+
+3. instalacja Django:
+
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> python -m pip install django
+Collecting django
+  Downloading django-6.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting asgiref>=3.9.1 (from django)
+  Using cached asgiref-3.12.1-py3-none-any.whl.metadata (9.4 kB)
+Collecting sqlparse>=0.5.0 (from django)
+  Using cached sqlparse-0.5.5-py3-none-any.whl.metadata (4.7 kB)
+Collecting tzdata (from django)
+  Using cached tzdata-2026.3-py2.py3-none-any.whl.metadata (1.4 kB)
+Downloading django-6.1-py3-none-any.whl (8.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.4/8.4 MB 14.4 MB/s  0:00:00
+Using cached asgiref-3.12.1-py3-none-any.whl (25 kB)
+Using cached sqlparse-0.5.5-py3-none-any.whl (46 kB)
+Using cached tzdata-2026.3-py2.py3-none-any.whl (348 kB)
+Installing collected packages: tzdata, sqlparse, asgiref, django
+Successfully installed asgiref-3.12.1 django-6.1 sqlparse-0.5.5 tzdata-2026.3
+WARNING: Cache entry deserialization failed, entry ignored
+
+Installing collected packages: tzdata, sqlparse, asgiref, django
+Successfully installed asgiref-3.12.1 django-6.1 sqlparse-0.5.5 tzdata-2026.3
+
+
+4. instalacja Celery:
+
+python -m pip install celery
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting celery
+  Using cached celery-5.6.3-py3-none-any.whl.metadata (23 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting billiard<5.0,>=4.2.1 (from celery)
+  Using cached billiard-4.2.4-py3-none-any.whl.metadata (4.8 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting kombu>=5.6.0 (from celery)
+  Using cached kombu-5.6.2-py3-none-any.whl.metadata (3.5 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting vine<6.0,>=5.1.0 (from celery)
+colorama, billiard, python-dateutil, prompt-toolkit, click, amqp, kombu, click-repl, click-plugins, click-didyoumean, celery
+
+Successfully installed amqp-5.3.1 billiard-4.2.4 celery-5.6.3 click-8.4.2 click-didyoumean-0.3.1 click-plugins-1.1.1.2 click-repl-0.3.0 colorama-0.4.6 kombu-5.6.2 packaging-26.3 prompt-toolkit-3.0.53 python-dateutil-2.9.0.post0 six-1.17.0 tzlocal-5.4.4 vine-5.1.0 wcwidth-0.8.2
+
+
+5. instalacja Redis:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> python -m pip install redis
+
+
+Collecting redis
+  Using cached redis-8.1.0-py3-none-any.whl.metadata (16 kB)
+Using cached redis-8.1.0-py3-none-any.whl (560 kB)
+Installing collected packages: redis
+Successfully installed redis-8.1.0
+
+
+6. instalacja flower:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> python -m pip install flower
+
+
+Installing collected packages: pytz, tornado, prometheus-client, humanize, flower
+Successfully installed flower-2.0.1 humanize-4.16.0 prometheus-client-0.26.0 pytz-2026.3.post1 tornado-6.5.8
+
+
+7. instalacja requests:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> python -m pip install requests
+
+Installing collected packages: urllib3, idna, charset_normalizer, certifi, requests
+Successfully installed certifi-2026.7.22 charset_normalizer-3.4.9 idna-3.18 requests-2.34.2 urllib3-2.7.0
+
+8. instalacja beautifulsoup4:
+
+ python -m pip install beautifulsoup4
+
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Installing collected packages: typing-extensions, soupsieve, beautifulsoup4
+Successfully installed beautifulsoup4-4.15.0 soupsieve-2.9.2 typing-extensions-4.16.0
+
+9. instalacja pillow:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> python -m pip install pillow       
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pillow
+  Using cached pillow-12.3.0-cp314-cp314-win_amd64.whl.metadata (9.3 kB)
+Using cached pillow-12.3.0-cp314-cp314-win_amd64.whl (7.2 MB)
+Installing collected packages: pillow
+Successfully installed pillow-12.3.0
+
+10. zapisanie zależności:
+
+python -m pip freeze > requirements.txt
+
+11. utworzenie projektu Django:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> django-admin startproject config .
+>> python manage.py startapp api
+
+
+
+12. sprawdzenie czy nie ma błędów:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> python manage.py check
+System check identified no issues (0 silenced).
+
+13. dodanie api w INSTALLED_APPS: 
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'api',
+]
+
+14. utworzenie pliku celery.py w katalogu config z zawartością:
+
+import os
+
+from celery import Celery
+
+
+os.environ.setdefault(
+    "DJANGO_SETTINGS_MODULE",
+    "config.settings",
+)
+
+app = Celery("config")
+
+app.config_from_object(
+    "django.conf:settings",
+    namespace="CELERY",
+)
+
+app.autodiscover_tasks()
+
+15. modyfikacja __init__.py  w katalogu config:
+
+from .celery import app as celery_app
+
+
+__all__ = ("celery_app",)
+
+16. dodanie konfiguracji Celery w settings.py:
+
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+
+CELERY_ACCEPT_CONTENT = ["json"]
+
+CELERY_TASK_SERIALIZER = "json"
+
+CELERY_RESULT_SERIALIZER = "json"
+
+CELERY_TIMEZONE = "Europe/Warsaw"
+
+16. sprawdzenie czy docker jest aktywny:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+17. uruchomienie dockera dla  lekcji 29:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> docker run --name lesson29-redis -p 6379:6379 -d redis
+118971b290b49caf8ab92c1ff5d6cc8d1c8ecb060ac9a087e6c33c54690836cc
+
+18.sprawdzenie działania dockera:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                         NAMES
+118971b290b4   redis     "docker-entrypoint.s…"   51 seconds ago   Up 50 seconds   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp   lesson29-redis
+
+19. sprawdzenie pingu dockera:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> docker exec -it lesson29-redis redis-cli ping
+PONG
+
+What's next:
+    Try Docker Debug for seamless, persistent debugging tools in any container or image → docker debug lesson29-redis
+    Learn more at https://docs.docker.com/go/debug-cli/
+
+20. ponowne sprawdzenie czy nie ma błędów:
+
+(.venv) PS D:\PythonPro-Course\homework\lesson29> python manage.py check
+System check identified no issues (0 silenced).
