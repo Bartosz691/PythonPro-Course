@@ -1,10 +1,11 @@
+import time
 from datetime import datetime
 
 from celery import shared_task
+from django.contrib.auth.models import User
 from django.utils import timezone
 
-from django.contrib.auth.models import User
-import time
+from .models import EmailNotification
 
 @shared_task
 def hello_world():
@@ -55,3 +56,37 @@ def process_video():
     time.sleep(15)
     print("Przetwarzanie wideo zakończone.")
     return "done"
+
+@shared_task
+def send_email_notification(notification_id):
+    notification = EmailNotification.objects.get(id=notification_id)
+
+    print(f"Wysyłanie maila do: {notification.recipient_email}")
+
+    time.sleep(5)
+
+    notification.sent_at = timezone.now()
+    notification.save(update_fields=["sent_at"])
+
+    print(f"Mail wysłany do: {notification.recipient_email}")
+
+    return notification.id
+
+@shared_task(bind=True)
+def progress_task(self):
+    for i in range(1, 101):
+        time.sleep(0.1)
+
+        self.update_state(
+            state="PROGRESS",
+            meta={
+                "current": i,
+                "total": 100,
+            },
+        )
+
+    return {
+        "current": 100,
+        "total": 100,
+        "status": "Zakończono",
+    }
