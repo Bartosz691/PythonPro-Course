@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from celery import shared_task
+from django.utils import timezone
 
 from django.contrib.auth.models import User
 
@@ -34,3 +35,16 @@ def count_users():
     count = User.objects.count()
     print(f"Liczba użytkowników w bazie: {count}")
     return count
+
+@shared_task
+def update_user_last_login(user_id):
+    user = User.objects.get(id=user_id)
+    user.last_login = timezone.now()
+    user.save(update_fields=["last_login"])
+
+    print(
+        f"Zaktualizowano last_login użytkownika ID={user_id}: "
+        f"{user.last_login}"
+    )
+
+    return user_id
