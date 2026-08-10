@@ -4,7 +4,7 @@ from PIL import Image
 from celery import shared_task
 from django.contrib.auth.models import User
 from django.utils import timezone
-from .models import EmailNotification, LogEntry, ScrapedPage, UploadedImage
+from .models import EmailNotification, LogEntry, ScrapedPage, UploadedImage,   TransactionItem
 from datetime import timedelta
 import requests
 import random
@@ -235,3 +235,22 @@ def save_chain_result(result):
     print(f"Zapisano wynik łańcucha do pliku: {result}")
 
     return result
+
+@shared_task
+def send_priority_email():
+    print("Wysłano krytycznego maila z kolejki priority_queue.")
+    return "priority email sent"
+
+@shared_task
+def process_transaction_item(item_id):
+    item = TransactionItem.objects.get(id=item_id)
+
+    item.processed = True
+    item.save(update_fields=["processed"])
+
+    print(
+        f"Przetworzono TransactionItem ID={item_id}, "
+        f"name={item.name}"
+    )
+
+    return item_id

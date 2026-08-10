@@ -1,7 +1,9 @@
 from celery.result import AsyncResult
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.db import transaction
 from .models import UploadedImage
+from .models import UploadedImage, TransactionItem
 from celery import chain
 
 from .tasks import (
@@ -14,6 +16,7 @@ from .tasks import (
     generate_random_number,
     multiply_by_ten,
     save_chain_result,
+    process_transaction_item,
 )
 
 
@@ -126,4 +129,19 @@ def start_chain_view(request):
     return JsonResponse({
         "task_id": task.id,
         "message": "Łańcuch zadań Celery został uruchomiony.",
+    })
+    
+def transaction_test_view(request):
+    with transaction.atomic():
+        item = TransactionItem.objects.create(
+            name="Obiekt testowy"
+        )
+
+        transaction.on_commit(
+            lambda: process_transaction_item.delay(item.id)
+        )
+
+    return JsonResponse({
+        "item_id": item.id,
+        "message": "Obiekt utworzono, zadanie Celery uruchomiono po commit.",
     })

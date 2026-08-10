@@ -164,3 +164,11 @@ CELERY_BEAT_SCHEDULE = {
 },
 
 }
+
+CELERY_TASK_DEFAULT_QUEUE = "default"
+
+CELERY_TASK_ROUTES = {
+    "api.tasks.send_priority_email": {
+        "queue": "priority_queue",
+    },
+}
