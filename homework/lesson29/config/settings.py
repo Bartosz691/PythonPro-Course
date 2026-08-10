@@ -153,4 +153,9 @@ CELERY_BEAT_SCHEDULE = {
         "task": "api.tasks.count_users",
         "schedule": crontab(hour=23, minute=0),
     },
+    "cleanup-old-logs-daily": {
+    "task": "api.tasks.cleanup_old_logs",
+    "schedule": crontab(hour=2, minute=0),
+    },
+
 }

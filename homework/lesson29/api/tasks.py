@@ -4,8 +4,9 @@ from datetime import datetime
 from celery import shared_task
 from django.contrib.auth.models import User
 from django.utils import timezone
+from .models import EmailNotification, LogEntry
+from datetime import timedelta
 
-from .models import EmailNotification
 
 @shared_task
 def hello_world():
@@ -90,3 +91,15 @@ def progress_task(self):
         "total": 100,
         "status": "Zakończono",
     }
+    
+@shared_task
+def cleanup_old_logs():
+    cutoff_date = timezone.now() - timedelta(days=90)
+
+    deleted_count, _ = LogEntry.objects.filter(
+        created_at__lt=cutoff_date
+    ).delete()
+
+    print(f"Usunięto starych wpisów LogEntry: {deleted_count}")
+
+    return deleted_count
