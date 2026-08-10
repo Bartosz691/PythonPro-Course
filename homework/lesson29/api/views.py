@@ -1,6 +1,7 @@
 from celery.result import AsyncResult
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from .models import UploadedImage
 
 from .tasks import (
     generate_users_csv,
@@ -8,6 +9,7 @@ from .tasks import (
     multiply,
     process_video,
     progress_task,
+    classify_uploaded_image
 )
 
 
@@ -89,3 +91,21 @@ def report_status_view(request, task_id):
         )
 
     return JsonResponse(response)
+
+def upload_image_view(request):
+    if request.method == "POST":
+        image_file = request.FILES.get("image")
+
+        uploaded = UploadedImage.objects.create(
+            image=image_file
+        )
+
+        task = classify_uploaded_image.delay(uploaded.id)
+
+        return JsonResponse({
+            "image_id": uploaded.id,
+            "task_id": task.id,
+            "message": "Obraz zapisany i wysłany do klasyfikacji.",
+        })
+
+    return render(request, "upload_image.html")

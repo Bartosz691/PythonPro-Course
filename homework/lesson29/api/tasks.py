@@ -1,10 +1,10 @@
 import time
 from datetime import datetime
-
+from PIL import Image
 from celery import shared_task
 from django.contrib.auth.models import User
 from django.utils import timezone
-from .models import EmailNotification, LogEntry, ScrapedPage
+from .models import EmailNotification, LogEntry, ScrapedPage, UploadedImage
 from datetime import timedelta
 import requests
 from bs4 import BeautifulSoup
@@ -184,3 +184,29 @@ def fetch_external_api(self):
     except requests.exceptions.RequestException as exc:
         print(f"Błąd połączenia: {exc}")
         raise self.retry(exc=exc, countdown=60)
+    
+@shared_task
+def classify_uploaded_image(image_id):
+    uploaded = UploadedImage.objects.get(id=image_id)
+
+    with Image.open(uploaded.image.path) as img:
+        width, height = img.size
+        mode = img.mode
+
+        if mode in ("1", "L"):
+            image_type = "skala szarości"
+        else:
+            image_type = "kolorowy"
+
+        result = (
+            f"Typ: {image_type}, "
+            f"tryb: {mode}, "
+            f"wymiary: {width}x{height}"
+        )
+
+    uploaded.classification_result = result
+    uploaded.save(update_fields=["classification_result"])
+
+    print(f"Klasyfikacja obrazka ID={image_id}: {result}")
+
+    return result

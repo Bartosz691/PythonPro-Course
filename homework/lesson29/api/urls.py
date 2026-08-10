@@ -19,6 +19,7 @@ path(
     "report-status/<str:task_id>/",
     views.report_status_view,
 ),
+path("upload-image/", views.upload_image_view),
 ]
 
 urlpatterns += static(
