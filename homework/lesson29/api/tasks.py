@@ -7,6 +7,8 @@ from django.utils import timezone
 from .models import EmailNotification, LogEntry, ScrapedPage, UploadedImage
 from datetime import timedelta
 import requests
+import random
+from celery import chain
 from bs4 import BeautifulSoup
 
 import csv
@@ -208,5 +210,28 @@ def classify_uploaded_image(image_id):
     uploaded.save(update_fields=["classification_result"])
 
     print(f"Klasyfikacja obrazka ID={image_id}: {result}")
+
+    return result
+
+@shared_task
+def generate_random_number():
+    number = random.randint(1, 100)
+    print(f"Wylosowano liczbę: {number}")
+    return number
+
+
+@shared_task
+def multiply_by_ten(number):
+    result = number * 10
+    print(f"{number} * 10 = {result}")
+    return result
+
+
+@shared_task
+def save_chain_result(result):
+    with open("chain_result.txt", "w", encoding="utf-8") as file:
+        file.write(str(result))
+
+    print(f"Zapisano wynik łańcucha do pliku: {result}")
 
     return result

@@ -2,6 +2,7 @@ from celery.result import AsyncResult
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from .models import UploadedImage
+from celery import chain
 
 from .tasks import (
     generate_users_csv,
@@ -9,7 +10,10 @@ from .tasks import (
     multiply,
     process_video,
     progress_task,
-    classify_uploaded_image
+    classify_uploaded_image,
+    generate_random_number,
+    multiply_by_ten,
+    save_chain_result,
 )
 
 
@@ -109,3 +113,17 @@ def upload_image_view(request):
         })
 
     return render(request, "upload_image.html")
+
+def start_chain_view(request):
+    workflow = chain(
+        generate_random_number.s(),
+        multiply_by_ten.s(),
+        save_chain_result.s(),
+    )
+
+    task = workflow.apply_async()
+
+    return JsonResponse({
+        "task_id": task.id,
+        "message": "Łańcuch zadań Celery został uruchomiony.",
+    })

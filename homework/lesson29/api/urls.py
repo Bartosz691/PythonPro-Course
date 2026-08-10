@@ -20,6 +20,7 @@ path(
     views.report_status_view,
 ),
 path("upload-image/", views.upload_image_view),
+path("start-chain/", views.start_chain_view),
 ]
 
 urlpatterns += static(
