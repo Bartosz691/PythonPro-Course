@@ -9,6 +9,10 @@ from datetime import timedelta
 import requests
 from bs4 import BeautifulSoup
 
+import csv
+from pathlib import Path
+from django.conf import settings
+
 
 @shared_task
 def hello_world():
@@ -124,3 +128,33 @@ def scrape_example_title():
     print(f"Pobrano tytuł strony: {title}")
 
     return page.id
+
+@shared_task
+def generate_users_csv():
+    media_dir = Path(settings.MEDIA_ROOT)
+    media_dir.mkdir(parents=True, exist_ok=True)
+
+    file_name = "users_report.csv"
+    file_path = media_dir / file_name
+
+    users = User.objects.all()
+
+    with open(file_path, "w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+
+        writer.writerow([
+            "id",
+            "username",
+            "email",
+        ])
+
+        for user in users:
+            writer.writerow([
+                user.id,
+                user.username,
+                user.email,
+            ])
+
+    print(f"Wygenerowano raport CSV: {file_path}")
+
+    return file_name

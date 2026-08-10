@@ -1,15 +1,21 @@
-from django.http import HttpResponse, JsonResponse
-
-
-from django.shortcuts import render
-from .tasks import hello_world, multiply, process_video,  progress_task
 from celery.result import AsyncResult
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
+
+from .tasks import (
+    generate_users_csv,
+    hello_world,
+    multiply,
+    process_video,
+    progress_task,
+)
 
 
 def hello_celery(request):
     hello_world.delay()
 
     return HttpResponse("Zadanie Celery zostało wysłane.")
+
 
 def multiply_view(request):
     if request.method == "POST":
@@ -18,14 +24,18 @@ def multiply_view(request):
 
         multiply.delay(a, b)
 
-        return HttpResponse("Zadanie mnożenia zostało wysłane do Celery.")
+        return HttpResponse(
+            "Zadanie mnożenia zostało wysłane do Celery."
+        )
 
     return render(request, "multiply.html")
+
 
 def process_video_view(request):
     process_video.delay()
 
     return HttpResponse("Przetwarzanie wideo rozpoczęte!")
+
 
 def start_progress_task(request):
     task = progress_task.delay()
@@ -33,7 +43,7 @@ def start_progress_task(request):
     return JsonResponse({
         "task_id": task.id
     })
-    
+
 
 def task_status(request, task_id):
     task = AsyncResult(task_id)
@@ -51,5 +61,31 @@ def task_status(request, task_id):
         response["current"] = 100
         response["total"] = 100
         response["result"] = task.result
+
+    return JsonResponse(response)
+
+
+def generate_report_view(request):
+    task = generate_users_csv.delay()
+
+    return JsonResponse({
+        "task_id": task.id
+    })
+
+
+def report_status_view(request, task_id):
+    task = AsyncResult(task_id)
+
+    response = {
+        "task_id": task_id,
+        "state": task.state,
+    }
+
+    if task.state == "SUCCESS":
+        file_name = task.result
+
+        response["download_url"] = request.build_absolute_uri(
+            f"/media/{file_name}"
+        )
 
     return JsonResponse(response)
