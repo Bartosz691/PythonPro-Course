@@ -158,3 +158,29 @@ def generate_users_csv():
     print(f"Wygenerowano raport CSV: {file_path}")
 
     return file_name
+
+import requests
+
+
+@shared_task(
+    bind=True,
+    autoretry_for=(requests.exceptions.RequestException,),
+    retry_kwargs={"max_retries": 3},
+    retry_backoff=False,
+    retry_jitter=False,
+)
+def fetch_external_api(self):
+    url = "http://127.0.0.1:9999/test"
+
+    print(f"Próba połączenia z: {url}")
+
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+
+        print("Połączenie zakończone sukcesem.")
+        return response.text
+
+    except requests.exceptions.RequestException as exc:
+        print(f"Błąd połączenia: {exc}")
+        raise self.retry(exc=exc, countdown=60)
