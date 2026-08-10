@@ -4,8 +4,10 @@ from datetime import datetime
 from celery import shared_task
 from django.contrib.auth.models import User
 from django.utils import timezone
-from .models import EmailNotification, LogEntry
+from .models import EmailNotification, LogEntry, ScrapedPage
 from datetime import timedelta
+import requests
+from bs4 import BeautifulSoup
 
 
 @shared_task
@@ -103,3 +105,22 @@ def cleanup_old_logs():
     print(f"Usunięto starych wpisów LogEntry: {deleted_count}")
 
     return deleted_count
+
+@shared_task
+def scrape_example_title():
+    url = "https://example.com"
+
+    response = requests.get(url, timeout=10)
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    title = soup.title.string.strip()
+
+    page = ScrapedPage.objects.create(
+        url=url,
+        title=title,
+    )
+
+    print(f"Pobrano tytuł strony: {title}")
+
+    return page.id
