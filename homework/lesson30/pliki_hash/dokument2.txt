@@ -1,0 +1,1 @@
+Drugi dokument do obliczenia SHA256.
