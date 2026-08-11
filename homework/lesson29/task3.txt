@@ -1,0 +1,33 @@
+dodanie w pliku api/tasks.py importu:
+from datetime import datetime
+utworzenie zadania log_timestamp:
+@shared_task
+def log_timestamp():
+    now = datetime.now()
+
+    with open("log.txt", "a", encoding="utf-8") as file:
+        file.write(f"{now}\n")
+
+    print(f"Zapisano czas: {now}")
+restart workera Celery:
+python -m celery -A config worker -l info --pool=solo
+
+Worker prawidłowo wykrył zadanie:
+
+[tasks]
+. api.tasks.hello_world
+. api.tasks.log_timestamp
+. api.tasks.multiply
+uruchomienie Django shell:
+python manage.py shell
+wywołanie zadania:
+from api.tasks import log_timestamp
+log_timestamp.delay()
+
+wynik:
+
+<AsyncResult: e0827bb1-185c-4577-a032-a8d8c42e7aed>
+wynik w workerze:
+Task api.tasks.log_timestamp[e0827bb1-185c-4577-a032-a8d8c42e7aed] received
+Zapisano czas: 2026-08-09 22:21:05.517831
+Task api.tasks.log_timestamp[e0827bb1-185c-4577-a032-a8d8c42e7aed] succeeded in 0.033930899982806295s:

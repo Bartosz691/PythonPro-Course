@@ -1,0 +1,94 @@
+
+1. utworzenie w api/models.py:
+
+class TransactionItem(models.Model):
+    name = models.CharField(max_length=255)
+    processed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+2. utworzenie migracji:
+
+python manage.py makemigrations
+
+3. wykonanie migracji:
+
+python manage.py migrate
+
+4. utworzenie w api/tasks.py:
+
+@shared_task
+def process_transaction_item(item_id):
+    item = TransactionItem.objects.get(id=item_id)
+
+    item.processed = True
+    item.save(update_fields=["processed"])
+
+    print(
+        f"Przetworzono TransactionItem ID={item_id}, "
+        f"name={item.name}"
+    )
+
+    return item_id
+
+5. dodanie w api/views.py:
+
+from django.db import transaction
+
+oraz:
+
+def transaction_test_view(request):
+    with transaction.atomic():
+        item = TransactionItem.objects.create(
+            name="Obiekt testowy"
+        )
+
+        transaction.on_commit(
+            lambda: process_transaction_item.delay(item.id)
+        )
+
+    return JsonResponse({
+        "item_id": item.id,
+        "message": "Obiekt utworzono, zadanie Celery uruchomiono po commit.",
+    })
+
+6. dodanie w api/urls.py:
+
+path("transaction-test/", views.transaction_test_view),
+
+7. uruchomienie workera:
+
+python -m celery -A config worker -l info --pool=solo
+
+8. wejście w przeglądarce:
+
+http://127.0.0.1:8000/transaction-test/
+
+wynik:
+
+{
+    "item_id": 1,
+    "message": "Obiekt utworzono, zadanie Celery uruchomiono po commit."
+}
+
+9. worker:
+
+Task api.tasks.process_transaction_item[009b5b55-82dd-4902-94fe-108928e0ea4b] received
+
+Przetworzono TransactionItem ID=1, name=Obiekt testowy
+
+Task api.tasks.process_transaction_item[009b5b55-82dd-4902-94fe-108928e0ea4b]
+succeeded in 0.22043919999850914s: 1
+
+10. sprawdzenie w Django shell:
+
+from api.models import TransactionItem
+item = TransactionItem.objects.last()
+item.processed
+
+wynik:
+
+True
+
+Zadanie Celery zostało więc uruchomione dopiero po poprawnym zatwierdzeniu transakcji, a następnie zmieniło pole processed na True.

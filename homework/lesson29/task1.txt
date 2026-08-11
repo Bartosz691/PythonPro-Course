@@ -4,7 +4,7 @@ from celery import shared_task
 
 @shared_task
 def hello_world():
-    print("Helo from Celery!")
+    print("Hello from Celery!")
 
 2. stworzenie widoku w Django, który po wejściu na odpowiedni adres URL wykona zadanie w api/views.py:
 

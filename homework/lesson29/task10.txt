@@ -1,0 +1,96 @@
+
+1. utworzenie w api/models.py modelu:
+
+class EmailNotification(models.Model):
+    recipient_email = models.EmailField()
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.recipient_email} - {self.subject}"
+
+2. utworzenie migracji:
+
+python manage.py makemigrations
+
+wynik:
+
+Migrations for 'api':
+  api\migrations\0001_initial.py
+    + Create model EmailNotification
+
+3. wykonanie migracji:
+
+python manage.py migrate
+
+wynik:
+
+Applying api.0001_initial... OK
+
+4. dodanie w api/tasks.py:
+
+from .models import EmailNotification
+
+oraz:
+
+@shared_task
+def send_email_notification(notification_id):
+    notification = EmailNotification.objects.get(id=notification_id)
+
+    print(f"Wysyłanie maila do: {notification.recipient_email}")
+
+    time.sleep(5)
+
+    notification.sent_at = timezone.now()
+    notification.save(update_fields=["sent_at"])
+
+    print(f"Mail wysłany do: {notification.recipient_email}")
+
+    return notification.id
+
+5. restart workera:
+
+python -m celery -A config worker -l info --pool=solo
+
+Worker wykrył:
+
+. api.tasks.send_email_notification
+
+6. utworzenie wiadomości w shellu:
+
+from api.models import EmailNotification
+
+notification = EmailNotification.objects.create(
+    recipient_email="test@example.com",
+    subject="Test Celery",
+    body="To jest testowa wiadomość."
+)
+
+7. sprawdzenie ID:
+
+notification.id
+
+wynik:
+
+1
+
+8. wysłanie zadania:
+
+from api.tasks import send_email_notification
+send_email_notification.delay(notification.id)
+
+wynik:
+
+<AsyncResult: 87770783-aa5a-4b89-b523-6474ed2ea093>
+
+9. ponowne pobranie danych z bazy:
+
+notification.refresh_from_db()
+notification.sent_at
+
+wynik:
+
+datetime.datetime(2026, 8, 9, 22, 42, 30, 557889, tzinfo=datetime.timezone.utc)
+
+Pole sent_at zostało więc poprawnie zapisane.

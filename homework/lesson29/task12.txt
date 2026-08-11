@@ -1,0 +1,84 @@
+1. dodanie w api/models.py:
+
+class LogEntry(models.Model):
+    message = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.created_at} - {self.message[:50]}"
+
+2. wykonanie:
+
+python manage.py makemigrations
+python manage.py migrate
+
+3. dodanie w api/tasks.py:
+
+from datetime import timedelta
+
+oraz:
+
+@shared_task
+def cleanup_old_logs():
+    cutoff_date = timezone.now() - timedelta(days=90)
+
+    deleted_count, _ = LogEntry.objects.filter(
+        created_at__lt=cutoff_date
+    ).delete()
+
+    print(f"Usunięto starych wpisów LogEntry: {deleted_count}")
+
+    return deleted_count
+
+4. dodanie harmonogramu dziennego w config/settings.py:
+
+"cleanup-old-logs-daily": {
+    "task": "api.tasks.cleanup_old_logs",
+    "schedule": crontab(hour=2, minute=0),
+},
+
+5. utworzenie danych testowych:
+
+old_log = LogEntry.objects.create(
+    message="Stary log",
+    created_at=timezone.now() - timedelta(days=100)
+)
+
+new_log = LogEntry.objects.create(
+    message="Nowy log",
+    created_at=timezone.now()
+)
+
+W trakcie testu utworzono ostatecznie dwa stare wpisy i jeden nowy:
+
+[
+ {'id': 3, 'message': 'Stary log', ...},
+ {'id': 4, 'message': 'Stary log', ...},
+ {'id': 5, 'message': 'Nowy log', ...}
+]
+
+6. uruchomienie:
+
+from api.tasks import cleanup_old_logs
+cleanup_old_logs()
+
+wynik:
+
+Usunięto starych wpisów LogEntry: 2
+2
+
+7. sprawdzenie:
+
+LogEntry.objects.count()
+
+wynik:
+
+1
+
+oraz:
+
+LogEntry.objects.first().message
+
+wynik:
+
+'Nowy log'

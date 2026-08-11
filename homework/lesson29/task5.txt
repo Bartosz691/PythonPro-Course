@@ -1,0 +1,43 @@
+1. dodanie w api/tasks.py importu modelu użytkownika:
+
+from django.contrib.auth.models import User
+
+2. utworzenie zadania:
+
+@shared_task
+def count_users():
+    count = User.objects.count()
+    print(f"Liczba użytkowników w bazie: {count}")
+    return count
+
+3. restart workera:
+
+python -m celery -A config worker -l info --pool=solo
+
+Worker wykrył zadanie:
+
+. api.tasks.count_users
+
+4. uruchomienie Django shell:
+
+python manage.py shell
+
+5. wysłanie zadania:
+
+from api.tasks import count_users
+count_users.delay()
+
+wynik:
+
+<AsyncResult: 97407157-c26e-4a73-ad5d-9baf5f5ff2c5>
+
+6. wynik workera:
+
+Task api.tasks.count_users[97407157-c26e-4a73-ad5d-9baf5f5ff2c5] received
+Liczba użytkowników w bazie: 0
+Task api.tasks.count_users[97407157-c26e-4a73-ad5d-9baf5f5ff2c5] succeeded in 0.06105549997300841s: 0
+
+W chwili wykonania zadania baza nie zawierała jeszcze żadnych użytkowników.
+
+
+

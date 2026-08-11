@@ -1,0 +1,73 @@
+1. dodanie w api/tasks.py importu:
+
+from django.utils import timezone
+
+2. utworzenie zadania:
+
+@shared_task
+def update_user_last_login(user_id):
+    user = User.objects.get(id=user_id)
+    user.last_login = timezone.now()
+    user.save(update_fields=["last_login"])
+
+    print(
+        f"Zaktualizowano last_login użytkownika ID={user_id}: "
+        f"{user.last_login}"
+    )
+
+    return user_id
+
+3. utworzenie użytkownika testowego w Django shell:
+
+python manage.py shell
+
+from django.contrib.auth.models import User
+
+user = User.objects.create_user(
+    username="testuser",
+    password="test12345"
+)
+
+user.id
+
+wynik:
+
+1
+
+4. restart workera:
+
+python -m celery -A config worker -l info --pool=solo
+
+Worker wykrył:
+
+. api.tasks.update_user_last_login
+
+5. wysłanie zadania:
+
+from api.tasks import update_user_last_login
+update_user_last_login.delay(1)
+
+wynik:
+
+<AsyncResult: 373e475c-2cf5-4fb2-852e-a137fedd0335>
+
+6. worker:
+
+Task api.tasks.update_user_last_login[373e475c-2cf5-4fb2-852e-a137fedd0335] received
+
+Zaktualizowano last_login użytkownika ID=1:
+2026-08-09 21:36:03.339479+00:00
+
+Task api.tasks.update_user_last_login[...] succeeded in 0.7972154000017326s: 1
+
+7. sprawdzenie w bazie:
+
+from django.contrib.auth.models import User
+user = User.objects.get(id=1)
+user.last_login
+
+wynik:
+
+datetime.datetime(2026, 8, 9, 21, 36, 3, 339479, tzinfo=datetime.timezone.utc)
+
+

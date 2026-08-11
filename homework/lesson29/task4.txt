@@ -1,0 +1,50 @@
+1. dodanie w config/settings.py importu:
+
+from datetime import timedelta
+
+2. dodanie harmonogramu Celery Beat:
+
+CELERY_BEAT_SCHEDULE = {
+    "log-timestamp-every-10-seconds": {
+        "task": "api.tasks.log_timestamp",
+        "schedule": timedelta(seconds=10),
+    },
+}
+
+3. uruchomienie workera Celery:
+
+python -m celery -A config worker -l info --pool=solo
+
+4. uruchomienie Celery Beat w drugim terminalu:
+
+python -m celery -A config beat -l info
+
+5. Celery Beat rozpoczął automatyczne wysyłanie zadania co 10 sekund:
+
+[2026-08-09 22:31:12,451: INFO/MainProcess]
+Scheduler: Sending due task log-timestamp-every-10-seconds (api.tasks.log_timestamp)
+
+[2026-08-09 22:31:22,434: INFO/MainProcess]
+Scheduler: Sending due task log-timestamp-every-10-seconds (api.tasks.log_timestamp)
+
+[2026-08-09 22:31:32,434: INFO/MainProcess]
+Scheduler: Sending due task log-timestamp-every-10-seconds (api.tasks.log_timestamp)
+
+[2026-08-09 22:31:42,434: INFO/MainProcess]
+Scheduler: Sending due task log-timestamp-every-10-seconds (api.tasks.log_timestamp)
+
+6. worker odbierał i wykonywał kolejne zadania:
+
+Task api.tasks.log_timestamp[...] received
+Zapisano czas: 2026-08-09 22:31:12.511697
+Task api.tasks.log_timestamp[...] succeeded
+
+Task api.tasks.log_timestamp[...] received
+Zapisano czas: 2026-08-09 22:31:22.442288
+Task api.tasks.log_timestamp[...] succeeded
+
+Task api.tasks.log_timestamp[...] received
+Zapisano czas: 2026-08-09 22:31:32.442594
+Task api.tasks.log_timestamp[...] succeeded
+
+

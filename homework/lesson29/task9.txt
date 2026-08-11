@@ -1,0 +1,69 @@
+
+1. utworzenie katalogów:
+
+api/management/
+api/management/commands/
+
+2. utworzenie pustych plików:
+
+api/management/__init__.py
+api/management/commands/__init__.py
+
+3. utworzenie pliku:
+
+api/management/commands/enqueue_tasks.py
+
+o zawartości:
+
+import random
+
+from django.core.management.base import BaseCommand
+
+from api.tasks import multiply
+
+
+class Command(BaseCommand):
+    help = "Dodaje do kolejki 50 zadań multiply z losowymi argumentami."
+
+    def handle(self, *args, **options):
+        for i in range(50):
+            a = random.randint(1, 100)
+            b = random.randint(1, 100)
+
+            task = multiply.delay(a, b)
+
+            self.stdout.write(
+                f"{i + 1}. Dodano zadanie: "
+                f"{a} * {b}, task_id={task.id}"
+            )
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                "Dodano 50 zadań multiply do kolejki Celery."
+            )
+        )
+
+4. uruchomienie komendy:
+
+python manage.py enqueue_tasks
+
+5. wynik:
+
+1. Dodano zadanie: 5 * 55, task_id=e341a6f2-d6ef-4f68-a381-865341a5466c
+2. Dodano zadanie: 27 * 50, task_id=cb06ce4f-0cb9-4fd4-9192-cbafeb4bc6d5
+3. Dodano zadanie: 25 * 21, task_id=398313c2-26d4-4960-93c7-bb557937882a
+...
+48. Dodano zadanie: 60 * 76, task_id=17b9375e-6fd8-433f-b788-cae480a37566
+49. Dodano zadanie: 39 * 13, task_id=c811d954-c4f0-4545-87f6-93c71f987056
+50. Dodano zadanie: 13 * 9, task_id=6a0262d6-b67c-490e-b602-a0b645b6b7c5
+
+Dodano 50 zadań multiply do kolejki Celery.
+
+6. worker wykonał wszystkie zadania, np.:
+
+Wynik mnożenia: 5 * 55 = 275
+Wynik mnożenia: 27 * 50 = 1350
+Wynik mnożenia: 25 * 21 = 525
+Wynik mnożenia: 95 * 84 = 7980
+...
+Wynik mnożenia: 13 * 9 = 117

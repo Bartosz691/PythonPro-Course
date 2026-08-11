@@ -1,0 +1,54 @@
+1. instalacja Flower:
+
+python -m pip install flower
+
+2. uruchomienie workera:
+
+python -m celery -A config worker -l info --pool=solo
+
+3. uruchomienie Flower:
+
+python -m celery -A config flower
+
+wynik:
+
+[I 260810 21:19:26 command:168] Visit me at http://0.0.0.0:5555
+
+[I 260810 21:19:26 command:176]
+Broker: redis://127.0.0.1:6379/0
+
+[I 260810 21:19:26 mixins:228]
+Connected to redis://127.0.0.1:6379/0
+
+Flower wykrył wszystkie zadania projektu.
+
+4. otwarcie panelu:
+
+http://127.0.0.1:5555/
+
+5. uruchomienie testowego zadania:
+
+from api.tasks import multiply
+multiply.delay(7, 8)
+
+wynik:
+
+<AsyncResult: 11d010e0-9830-4f18-942e-beae13f73c2b>
+
+6. worker:
+
+Task api.tasks.multiply[11d010e0-9830-4f18-942e-beae13f73c2b] received
+Wynik mnożenia: 7 * 8 = 56
+Task api.tasks.multiply[...] succeeded in 0.02522139996290207s: 56
+
+7. Flower wyświetlił to samo zadanie o UUID:
+
+11d010e0-9830-4f18-942e-beae13f73c2b
+
+ze stanem:
+
+SUCCESS
+
+oraz wynikiem:
+
+56

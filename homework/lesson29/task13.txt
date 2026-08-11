@@ -1,0 +1,78 @@
+1. utworzenie w api/models.py modelu:
+
+class ScrapedPage(models.Model):
+    url = models.URLField()
+    title = models.CharField(max_length=255)
+    scraped_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.title} - {self.url}"
+
+2. wykonanie migracji:
+
+python manage.py makemigrations
+python manage.py migrate
+
+3. dodanie w api/tasks.py:
+
+import requests
+from bs4 import BeautifulSoup
+
+oraz:
+
+@shared_task
+def scrape_example_title():
+    url = "https://example.com"
+
+    response = requests.get(url, timeout=10)
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    title = soup.title.string.strip()
+
+    page = ScrapedPage.objects.create(
+        url=url,
+        title=title,
+    )
+
+    print(f"Pobrano tytuł strony: {title}")
+
+    return page.id
+
+4. dodanie do Celery Beat:
+
+"scrape-example-every-hour": {
+    "task": "api.tasks.scrape_example_title",
+    "schedule": crontab(minute=0),
+},
+
+5. ręczny test w shellu:
+
+from api.tasks import scrape_example_title
+scrape_example_title.delay()
+
+wyniki:
+
+<AsyncResult: a2011b22-383f-4d1b-ac10-3169b78c13f5>
+
+<AsyncResult: 5cc35486-52ac-4bad-89ff-486203271626>
+
+6. worker:
+
+Pobrano tytuł strony: Example Domain
+Task api.tasks.scrape_example_title[...] succeeded
+
+7. sprawdzenie bazy:
+
+ScrapedPage.objects.count()
+
+wynik:
+
+2
+
+ScrapedPage.objects.last().title
+
+wynik:
+
+'Example Domain'
+

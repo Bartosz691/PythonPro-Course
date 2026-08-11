@@ -1,0 +1,105 @@
+1. dodanie w config/settings.py:
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+2. dodanie w config/urls.py:
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+oraz:
+
+urlpatterns += static(
+    settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT,
+)
+
+3. dodanie w api/tasks.py:
+
+import csv
+from pathlib import Path
+from django.conf import settings
+
+oraz:
+
+@shared_task
+def generate_users_csv():
+    media_dir = Path(settings.MEDIA_ROOT)
+    media_dir.mkdir(parents=True, exist_ok=True)
+
+    file_name = "users_report.csv"
+    file_path = media_dir / file_name
+
+    users = User.objects.all()
+
+    with open(file_path, "w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+
+        writer.writerow([
+            "id",
+            "username",
+            "email",
+        ])
+
+        for user in users:
+            writer.writerow([
+                user.id,
+                user.username,
+                user.email,
+            ])
+
+    print(f"Wygenerowano raport CSV: {file_path}")
+
+    return file_name
+
+4. dodanie w api/views.py:
+
+def generate_report_view(request):
+    task = generate_users_csv.delay()
+
+    return JsonResponse({
+        "task_id": task.id
+    })
+
+oraz:
+
+def report_status_view(request, task_id):
+    task = AsyncResult(task_id)
+
+    response = {
+        "task_id": task_id,
+        "state": task.state,
+    }
+
+    if task.state == "SUCCESS":
+        file_name = task.result
+
+        response["download_url"] = request.build_absolute_uri(
+            f"/media/{file_name}"
+        )
+
+    return JsonResponse(response)
+
+5. dodanie w api/urls.py:
+
+path("generate-report/", views.generate_report_view),
+path(
+    "report-status/<str:task_id>/",
+    views.report_status_view,
+),
+
+6. uruchomienie:
+
+http://127.0.0.1:8000/generate-report/
+
+7. sprawdzenie statusu zadania zwróciło:
+
+{
+    "state": "SUCCESS",
+    "download_url": "http://127.0.0.1:8000/media/users_report.csv"
+}
+
+8. plik rzeczywiście został utworzony w:
+
+media/users_report.csv

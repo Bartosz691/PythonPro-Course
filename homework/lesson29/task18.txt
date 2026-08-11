@@ -1,0 +1,65 @@
+1. dodanie w config/settings.py:
+
+CELERY_TASK_DEFAULT_QUEUE = "default"
+
+CELERY_TASK_ROUTES = {
+    "api.tasks.send_priority_email": {
+        "queue": "priority_queue",
+    },
+}
+
+2. utworzenie w api/tasks.py:
+
+@shared_task
+def send_priority_email():
+    print("Wysłano krytycznego maila z kolejki priority_queue.")
+    return "priority email sent"
+
+3. uruchomienie pierwszego workera:
+
+python -m celery -A config worker -l info --pool=solo -Q default -n default_worker@%h
+
+worker:
+
+.> default exchange=default(direct) key=default
+
+4. uruchomienie drugiego workera:
+
+python -m celery -A config worker -l info --pool=solo -Q priority_queue -n priority_worker@%h
+
+worker:
+
+.> priority_queue exchange=priority_queue(direct) key=priority_queue
+
+5. wysłanie zwykłego zadania:
+
+from api.tasks import multiply
+multiply.delay(4, 5)
+
+wynik:
+
+<AsyncResult: c685d7f5-5107-4c52-8d3d-0b6ba51911ee>
+
+worker default:
+
+Task api.tasks.multiply[...] received
+Wynik mnożenia: 4 * 5 = 20
+Task api.tasks.multiply[...] succeeded
+
+6. wysłanie priorytetowego zadania:
+
+from api.tasks import send_priority_email
+send_priority_email.delay()
+
+wynik:
+
+<AsyncResult: a26e9635-93c6-4b34-9067-7e812440bd95>
+
+worker priority_queue:
+
+Task api.tasks.send_priority_email[...] received
+Wysłano krytycznego maila z kolejki priority_queue.
+Task api.tasks.send_priority_email[...] succeeded:
+'priority email sent'
+
+Routing dwóch kolejek zadziałał poprawnie.

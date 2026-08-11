@@ -1,0 +1,101 @@
+1. dodanie w api/models.py:
+
+class UploadedImage(models.Model):
+    image = models.ImageField(upload_to="uploaded_images/")
+    classification_result = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+
+    def __str__(self):
+        return f"Image {self.id}"
+
+2. wykonanie:
+
+python manage.py makemigrations
+python manage.py migrate
+
+3. dodanie w api/tasks.py:
+
+from PIL import Image
+
+oraz:
+
+@shared_task
+def classify_uploaded_image(image_id):
+    uploaded = UploadedImage.objects.get(id=image_id)
+
+    with Image.open(uploaded.image.path) as img:
+        width, height = img.size
+        mode = img.mode
+
+        if mode in ("1", "L"):
+            image_type = "skala szarości"
+        else:
+            image_type = "kolorowy"
+
+        result = (
+            f"Typ: {image_type}, "
+            f"tryb: {mode}, "
+            f"wymiary: {width}x{height}"
+        )
+
+    uploaded.classification_result = result
+    uploaded.save(update_fields=["classification_result"])
+
+    print(f"Klasyfikacja obrazka ID={image_id}: {result}")
+
+    return result
+
+4. dodanie w api/views.py:
+
+def upload_image_view(request):
+    if request.method == "POST":
+        image_file = request.FILES.get("image")
+
+        uploaded = UploadedImage.objects.create(
+            image=image_file
+        )
+
+        task = classify_uploaded_image.delay(uploaded.id)
+
+        return JsonResponse({
+            "image_id": uploaded.id,
+            "task_id": task.id,
+            "message": "Obraz zapisany i wysłany do klasyfikacji.",
+        })
+
+    return render(request, "upload_image.html")
+
+5. utworzenie:
+
+api/templates/upload_image.html
+
+6. dodanie w api/urls.py:
+
+path("upload-image/", views.upload_image_view),
+
+7. przesłanie obrazu przez:
+
+http://127.0.0.1:8000/upload-image/
+
+8. wynik workera:
+
+Task api.tasks.classify_uploaded_image[097d17c0-2487-444f-ba69-a2e5fe872048] received
+
+Klasyfikacja obrazka ID=1:
+Typ: kolorowy, tryb: RGB, wymiary: 3132x3132
+
+Task api.tasks.classify_uploaded_image[...] succeeded in 0.23804330005077645s:
+'Typ: kolorowy, tryb: RGB, wymiary: 3132x3132'
+
+9. sprawdzenie:
+
+from api.models import UploadedImage
+img = UploadedImage.objects.get(id=1)
+img.classification_result
+
+wynik:
+
+'Typ: kolorowy, tryb: RGB, wymiary: 3132x3132'
+

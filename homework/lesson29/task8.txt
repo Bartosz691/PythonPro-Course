@@ -1,0 +1,48 @@
+1. dodanie w api/tasks.py:
+
+import time
+
+2. utworzenie zadania:
+
+@shared_task
+def process_video():
+    print("Rozpoczęto przetwarzanie wideo...")
+    time.sleep(15)
+    print("Przetwarzanie wideo zakończone.")
+    return "done"
+
+3. dodanie w api/views.py widoku:
+
+from .tasks import process_video
+
+def process_video_view(request):
+    process_video.delay()
+
+    return HttpResponse("Przetwarzanie wideo rozpoczęte!")
+
+4. dodanie w api/urls.py:
+
+path("process-video/", views.process_video_view),
+
+5. uruchomienie workera:
+
+python -m celery -A config worker -l info --pool=solo
+
+6. uruchomienie Django:
+
+python manage.py runserver
+
+7. sprawdzenie w przeglądarce:
+
+http://127.0.0.1:8000/process-video/
+
+Przeglądarka natychmiast wyświetliła:
+
+Przetwarzanie wideo rozpoczęte!
+
+Serwer Django:
+
+[09/Aug/2026 23:48:43] "GET /process-video/ HTTP/1.1" 200 32
+
+Długotrwała operacja została więc przekazana do Celery i nie blokowała odpowiedzi HTTP.
+

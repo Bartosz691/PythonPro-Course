@@ -1,0 +1,61 @@
+1. utworzenie w api/tasks.py zadania:
+
+@shared_task(
+    bind=True,
+    autoretry_for=(requests.exceptions.RequestException,),
+    retry_kwargs={"max_retries": 3},
+    retry_backoff=False,
+    retry_jitter=False,
+)
+def fetch_external_api(self):
+    url = "http://127.0.0.1:9999/test"
+
+    print(f"Próba połączenia z: {url}")
+
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+
+        print("Połączenie zakończone sukcesem.")
+        return response.text
+
+    except requests.exceptions.RequestException as exc:
+        print(f"Błąd połączenia: {exc}")
+        raise self.retry(exc=exc, countdown=60)
+
+2. restart workera:
+
+python -m celery -A config worker -l info --pool=solo
+
+3. uruchomienie w shellu:
+
+from api.tasks import fetch_external_api
+fetch_external_api.delay()
+
+4. worker wykonał pierwszą próbę:
+
+Task api.tasks.fetch_external_api[23342a4b-3cd2-4198-8930-9a3956369c88] received
+
+Próba połączenia z: http://127.0.0.1:9999/test
+
+Błąd połączenia:
+[WinError 10061] Nie można nawiązać połączenia,
+ponieważ komputer docelowy aktywnie go odmawia
+
+5. Celery ustawił retry:
+
+retry: Retry in 60s
+
+6. kolejne próby następowały około:
+
+13:58
+13:59
+14:00
+
+7. po wykorzystaniu limitu:
+
+Task api.tasks.fetch_external_api[...] raised unexpected:
+ConnectionError(...)
+
+Mechanizm trzech ponowień co 60 sekund został poprawnie przetestowany.
+
