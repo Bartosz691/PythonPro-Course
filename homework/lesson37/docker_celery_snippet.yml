@@ -1,0 +1,23 @@
+services:
+  celery_orders:
+    build: .
+    command: >
+      celery -A config worker
+      --loglevel=info
+      --queues=orders
+      --hostname=orders@%h
+
+  celery_notifications:
+    build: .
+    command: >
+      celery -A config worker
+      --loglevel=info
+      --queues=notifications
+      --hostname=notifications@%h
+
+  celery_beat:
+    build: .
+    command: >
+      celery -A config beat
+      --loglevel=info
+      --schedule=/tmp/celerybeat-schedule
